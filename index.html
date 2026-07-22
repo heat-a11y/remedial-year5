@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>🏫 Sports Day Quest — Pixel Adventure + AI Learning</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -10,9 +10,11 @@ body{
   background:#1a1a2e;color:#fff;font-family:'Courier New',monospace;
   display:flex;gap:1rem;padding:1rem;min-height:100vh;
 }
+/* ── Sidebar ── */
 .sidebar{
   width:260px;min-width:260px;background:#16213e;border:2px solid #0f3460;border-radius:10px;
   padding:0.8rem;font-size:0.75rem;height:fit-content;position:sticky;top:1rem;
+  transition:transform 0.3s ease, opacity 0.3s ease;
 }
 .sidebar h2{font-size:0.9rem;color:#ffd700;margin-bottom:0.5rem;text-align:center;}
 .sidebar h3{font-size:0.8rem;color:#4fc3f7;margin-top:0.6rem;margin-bottom:0.2rem;}
@@ -23,6 +25,26 @@ body{
 .sidebar .badge.g{background:#4285F4;}
 .sidebar .badge.m{background:#00A4EF;}
 .sidebar hr{border:none;border-top:1px solid #333;margin:0.5rem 0;}
+
+/* sidebar overlay backdrop */
+.sidebar-backdrop{
+  display:none;position:fixed;inset:0;z-index:40;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);
+}
+.sidebar-backdrop.show{display:block;}
+
+/* sidebar mobile toggle */
+#sidebar-toggle{
+  display:none;position:fixed;bottom:1rem;right:1rem;z-index:45;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,#0f3460,#1a1a5e);
+  border:2px solid #4fc3f7;color:#fff;
+  font-size:1.4rem;cursor:pointer;
+  box-shadow:0 4px 20px rgba(79,195,247,0.3);
+  align-items:center;justify-content:center;
+  transition:transform 0.2s;
+}
+#sidebar-toggle:active{transform:scale(0.9);}
 
 /* slideshow shared */
 .slideshow-box{background:#16213e;border:2px solid #0f3460;border-radius:10px;padding:0.8rem;margin-bottom:1rem;}
@@ -79,20 +101,100 @@ h1 span{color:#ff0;}
 .ai-q .qn{font-weight:700;color:#ffd700;}
 
 #game2{display:block;}
-.battle-hud{background:rgba(0,0,0,0.85);border:2px solid #e53935;border-radius:8px;padding:0.8rem;}
-.battle-hud .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;}
-.battle-hud .hp-bar{background:#333;height:10px;border-radius:5px;overflow:hidden;flex:1;margin:0 0.3rem;}
-.battle-hud .hp-bar .fill{height:100%;transition:width 0.3s;}
-.battle-hud .hp-bar .fill.player{background:#4caf50;}
-.battle-hud .hp-bar .fill.monster{background:#e53935;}
-.battle-hud .choices{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-top:0.4rem;}
-.battle-hud .choices .btn{padding:0.4rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.75rem;background:#333;color:#fff;text-align:left;}
-.battle-hud .choices .btn:hover{background:#555;}
-.battle-hud .choices .btn:disabled{opacity:0.4;cursor:not-allowed;}
-.monster-sprite{font-size:2.5rem;text-align:center;line-height:1;}
-.hp-text{font-size:0.7rem;}
-.status-text{font-size:0.8rem;min-height:1.5rem;margin:0.2rem 0;color:#ff0;text-align:center;}
-.win-screen{background:linear-gradient(135deg,#1a5c1a,#2d8a2d);border:2px solid #ffd700;border-radius:10px;padding:1.5rem;text-align:center;margin-top:1rem;display:none;}
+
+/* ═══════ POKEMON-STYLE BATTLE ═══════ */
+.battle-scene{
+  position:relative;width:100%;max-width:600px;margin:0 auto;
+  border-radius:10px;overflow:hidden;border:2px solid #333;
+}
+.battle-canvas{display:block;width:100%;height:auto;image-rendering:pixelated;}
+.battle-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:0.6rem;pointer-events:none;
+}
+.battle-hud{
+  background:rgba(0,0,0,0.88);border:2px solid #ffd700;border-radius:10px;
+  padding:0.6rem 0.8rem;pointer-events:auto;
+  animation:hudPop 0.3s ease-out;
+}
+@keyframes hudPop{0%{transform:translateY(10px);opacity:0;}100%{transform:translateY(0);opacity:1;}}
+.battle-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.2rem;}
+.battle-row .hp-section{flex:1;}
+.battle-row .hp-section .label{font-size:0.65rem;color:#aaa;font-weight:700;}
+.battle-row .hp-section .hp-val{font-size:0.7rem;color:#fff;}
+.hp-bar-wrap{background:#222;height:10px;border-radius:5px;overflow:hidden;margin-top:2px;border:1px solid #444;}
+.hp-bar-wrap .hp-fill{height:100%;border-radius:5px;transition:width 0.15s linear;}
+.hp-fill.green{background:linear-gradient(90deg,#4caf50,#66bb6a);}
+.hp-fill.yellow{background:linear-gradient(90deg,#ff9800,#ffb74d);}
+.hp-fill.red{background:linear-gradient(90deg,#e53935,#ef5350);}
+.status-text{font-size:0.75rem;color:#ffd700;min-height:1.3rem;text-align:center;padding:0.2rem 0;font-weight:700;}
+.quiz-choices{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;}
+.quiz-choices .qbtn{
+  padding:0.4rem 0.5rem;border:2px solid #444;border-radius:8px;font-weight:700;cursor:pointer;
+  font-family:inherit;font-size:0.7rem;background:#1a1a2e;color:#ddd;text-align:left;
+  transition:all 0.15s;pointer-events:auto;
+}
+.quiz-choices .qbtn:hover{background:#2a2a4e;border-color:#4fc3f7;}
+.quiz-choices .qbtn:disabled{opacity:0.6;cursor:not-allowed;}
+.quiz-choices .qbtn.correct{background:#1b5e20;border-color:#4caf50;color:#a5d6a7;}
+.quiz-choices .qbtn.wrong{background:#b71c1c;border-color:#e53935;color:#ef9a9a;}
+.quiz-choices .qbtn.reveal{background:#1b5e20;border-color:#4caf50;color:#a5d6a7;}
+.battle-btn-row{display:flex;gap:0.4rem;justify-content:center;margin-top:0.3rem;}
+.battle-btn{
+  padding:0.3rem 0.8rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;
+  font-family:inherit;font-size:0.75rem;color:#fff;pointer-events:auto;
+  transition:transform 0.1s;
+}
+.battle-btn:active{transform:scale(0.92);}
+.battle-btn.start{background:linear-gradient(135deg,#e53935,#ff7043);box-shadow:0 2px 10px rgba(229,57,53,0.4);}
+.battle-btn.reset{background:#333;}
+.battle-btn.next-wave{background:linear-gradient(135deg,#4caf50,#66bb6a);}
+
+/* damage numbers */
+.dmg-num{
+  position:absolute;font-size:1.6rem;font-weight:900;pointer-events:none;
+  animation:dmgFloat 0.8s ease-out forwards;z-index:5;
+  text-shadow:0 0 8px rgba(255,0,0,0.8),2px 2px 0 #000;
+}
+.dmg-num.heal{color:#4caf50;text-shadow:0 0 8px rgba(76,175,80,0.8),2px 2px 0 #000;}
+@keyframes dmgFloat{0%{opacity:1;transform:translateY(0) scale(1);}100%{opacity:0;transform:translateY(-40px) scale(1.3);}}
+
+/* screen shake */
+.shake{
+  animation:shakeAnim 0.3s ease-out;
+}
+@keyframes shakeAnim{
+  0%,100%{transform:translate(0,0);}
+  10%{transform:translate(-4px,2px);}
+  20%{transform:translate(3px,-3px);}
+  30%{transform:translate(-3px,1px);}
+  40%{transform:translate(4px,-2px);}
+  50%{transform:translate(-2px,3px);}
+  60%{transform:translate(1px,-1px);}
+  70%{transform:translate(-1px,2px);}
+  80%{transform:translate(2px,-2px);}
+  90%{transform:translate(-2px,0);}
+}
+
+/* flash overlay */
+.flash-overlay{
+  position:absolute;inset:0;background:#fff;z-index:3;
+  animation:flashAnim 0.15s ease-out forwards;pointer-events:none;
+}
+@keyframes flashAnim{0%{opacity:0.6;}100%{opacity:0;}}
+
+/* slash arc */
+.slash-arc{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+  animation:slashAnim 0.3s ease-out forwards;
+}
+@keyframes slashAnim{0%{opacity:0;transform:scale(0.5);}30%{opacity:1;transform:scale(1.1);}100%{opacity:0;transform:scale(1.3);}}
+
+.win-screen{
+  background:linear-gradient(135deg,#1a5c1a,#2d8a2d);border:2px solid #ffd700;
+  border-radius:10px;padding:1.5rem;text-align:center;margin-top:1rem;display:none;
+}
 .win-screen h2{font-size:1.3rem;color:#ffd700;}
 .monster-link{color:#4fc3f7;text-decoration:underline;cursor:pointer;}
 .monster-link:hover{color:#81d4fa;}
@@ -102,13 +204,32 @@ h1 span{color:#ff0;}
 .dbtn:hover{background:#555;border-color:#0f3460;}
 .dbtn:active{background:#0f3460;transform:scale(0.92);}
 
-@media(max-width:800px){.sidebar{display:none;} .main{max-width:100%;}}
+@media(max-width:800px){
+  .sidebar{
+    display:block;position:fixed;top:0;left:0;width:280px;height:100vh;
+    z-index:50;border-radius:0;border:none;border-right:2px solid #0f3460;
+    transform:translateX(-110%);opacity:0;overflow-y:auto;padding-top:3rem;
+  }
+  .sidebar.open{transform:translateX(0);opacity:1;}
+  .sidebar-backdrop.show{display:block;}
+  #sidebar-toggle{display:flex;}
+  .main{max-width:100%;}
+}
+
+@media(max-width:450px){
+  .quiz-choices{grid-template-columns:1fr;}
+  .battle-hud{padding:0.4rem;}
+  .quiz-choices .qbtn{font-size:0.65rem;padding:0.3rem 0.4rem;}
+}
 </style>
 </head>
 <body>
 
+<!-- SIDEBAR BACKDROP -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
 <!-- SIDEBAR -->
-<div class="sidebar">
+<div class="sidebar" id="sidebar">
   <h2>📋 Lesson Plan</h2>
   <p><strong>Year 5 · English · Sports</strong><br>60 min · Writing focus</p>
   <hr>
@@ -131,6 +252,9 @@ h1 span{color:#ff0;}
   <hr>
   <p style="color:#888;font-size:0.65rem;">remedial-year5 · heat-a11y</p>
 </div>
+
+<!-- SIDEBAR TOGGLE BUTTON (mobile) -->
+<button id="sidebar-toggle" aria-label="Toggle lesson plan sidebar">📋</button>
 
 <!-- MAIN -->
 <div class="main">
@@ -206,39 +330,64 @@ h1 span{color:#ff0;}
   </div>
 </div>
 
-<!-- ─── GAME 2 ─── -->
+<!-- ─── GAME 2: POKEMON-STYLE QUIZ BATTLE ─── -->
 <div class="game-box" id="game2">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
     <span style="font-weight:700;font-size:0.9rem;">⚡ Sports & AI Quiz Battle</span>
     <span style="font-size:0.7rem;color:#888;" id="battle-progress">15 questions · 3 monsters</span>
   </div>
-  <div class="battle-hud" id="battle-hud">
-    <div class="row">
-      <div><span class="monster-name" id="monster-name">Canva Bot</span> <span class="hp-text" id="monster-hp-txt">HP 5/5</span></div>
-      <div class="monster-sprite" id="monster-sprite">🎨</div>
-      <div style="text-align:right"><span id="player-name">You</span> <span class="hp-text" id="player-hp-txt">HP 15/15</span></div>
-    </div>
-    <div class="row">
-      <div class="hp-bar"><div class="fill monster" id="monster-hp-bar" style="width:100%"></div></div>
-      <div class="hp-bar"><div class="fill player" id="player-hp-bar" style="width:100%"></div></div>
-    </div>
-    <div class="status-text" id="battle-status">Press Start to begin!</div>
-    <div class="choices" id="quiz-choices"></div>
-    <div style="text-align:center;margin-top:0.4rem;">
-      <button class="btn primary" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
-      <button class="btn danger" onclick="resetGame2()">🔄 Reset</button>
+
+  <div class="battle-scene" id="battle-scene">
+    <canvas class="battle-canvas" id="bc" width="600" height="340"></canvas>
+    <div class="battle-overlay" id="battle-overlay">
+      <div class="battle-hud" id="battle-hud">
+        <div style="display:flex;gap:1rem;margin-bottom:0.2rem;">
+          <div class="hp-section" style="flex:1;">
+            <div class="label" id="monster-label" style="color:#8B5CF6;">Canva Bot</div>
+            <div class="hp-val"><span id="monster-hp-txt">HP 5/5</span></div>
+            <div class="hp-bar-wrap"><div class="hp-fill green" id="monster-hp-bar" style="width:100%"></div></div>
+          </div>
+          <div class="hp-section" style="flex:1;text-align:right;">
+            <div class="label" style="color:#4fc3f7;">Player</div>
+            <div class="hp-val"><span id="player-hp-txt">HP 15/15</span></div>
+            <div class="hp-bar-wrap"><div class="hp-fill green" id="player-hp-bar" style="width:100%"></div></div>
+          </div>
+        </div>
+        <div class="status-text" id="battle-status">Press Start to begin!</div>
+        <div class="quiz-choices" id="quiz-choices"></div>
+        <div class="battle-btn-row">
+          <button class="battle-btn start" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
+          <button class="battle-btn reset" onclick="resetGame2()">🔄 Reset</button>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="win-screen" id="win-screen">
     <h2>🏆 YOU ARE THE CHAMPION!</h2>
     <p>You defeated all 3 AI monsters and mastered sports + AI tool knowledge!</p>
     <p style="margin-top:0.8rem;">🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot</p>
-    <button class="btn primary" style="margin-top:1rem;" onclick="resetGame2()">🔄 Play Again</button>
+    <div style="font-size:3rem;margin:0.5rem 0;">🏆</div>
+    <button class="battle-btn start" onclick="resetGame2()">🔄 Play Again</button>
   </div>
 </div>
 </div>
 
 <script>
+// ════════════════════════════════════
+// SIDEBAR TOGGLE (mobile)
+// ════════════════════════════════════
+const sidebar = document.getElementById('sidebar');
+const sidebarToggle = document.getElementById('sidebar-toggle');
+const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+function toggleSidebar() {
+  sidebar.classList.toggle('open');
+  sidebarBackdrop.classList.toggle('show');
+}
+sidebarToggle.addEventListener('click', toggleSidebar);
+sidebarBackdrop.addEventListener('click', toggleSidebar);
+
 // ════════════════════════════════════
 // SLIDESHOWS
 // ════════════════════════════════════
@@ -304,9 +453,9 @@ const MAP = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 const MONSTERS = [
-  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', url:'https://canva.com', task:'1. Go to canva.com\n2. Type: "Sports Day poster"\n3. Add: We ran, we jumped, we won!' },
-  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', url:'https://gemini.google.com', task:'1. Go to gemini.google.com\n2. Type: "4 sentences about Sports Day using past tense"\n3. Write your own version.' },
-  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', url:'https://copilot.microsoft.com', task:'1. Go to copilot.microsoft.com\n2. Type: "Yesterday I play football"\n3. Ask: Correct my grammar.' },
+  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', url:'https://canva.com', task:'1. Go to canva.com\\n2. Type: "Sports Day poster"\\n3. Add: We ran, we jumped, we won!' },
+  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', url:'https://gemini.google.com', task:'1. Go to gemini.google.com\\n2. Type: "4 sentences about Sports Day using past tense"\\n3. Write your own version.' },
+  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', url:'https://copilot.microsoft.com', task:'1. Go to copilot.microsoft.com\\n2. Type: "Yesterday I play football"\\n3. Ask: Correct my grammar.' },
 ];
 const AI_QUESTIONS = {
   'Canva Bot': [
@@ -380,7 +529,6 @@ function drawGame() {
 /* ── MOVEMENT ── */
 function movePlayer(dx, dy) {
   if (!gameActive) return;
-  // Check if dialog is actually visible (handles both inline and CSS class)
   const dialogVisible = dialogEl.style.display === 'block' || 
     (dialogEl.style.display !== 'none' && window.getComputedStyle(dialogEl).display !== 'none');
   if (dialogVisible) return;
@@ -403,7 +551,6 @@ function clickMove(e) {
   const my = Math.floor((e.clientY - rect.top) * scaleY / TILE);
   if (mx<0||mx>=COLS||my<0||my>=ROWS||MAP[my][mx]===1) return;
   if (mx===player.x && my===player.y) return;
-  // Simple BFS path
   const path = findPath(player.x, player.y, mx, my);
   if (path.length > 0) {
     moveQueue = path;
@@ -442,7 +589,7 @@ function encounterMonster(m) {
   currentMonster = m;
   showDialog(`<b>${m.emoji} ${m.name} found!</b><br><br>
     <b>Step 1:</b> Visit <a href="${m.url}" target="_blank" class="monster-link">${m.name} → ${m.url}</a><br>
-    <span style="font-size:0.75rem;color:#aaa;">${m.task.replace(/\n/g,'<br>')}</span><br><br>
+    <span style="font-size:0.75rem;color:#aaa;">${m.task.replace(/\\n/g,'<br>')}</span><br><br>
     <b>Step 2:</b> Answer 3 questions!<br>
     <button class="btn primary" onclick="startAIQuestions()">📝 Answer questions</button>
     <button class="btn danger" onclick="hideDialog()">🏃 Later</button>`);
@@ -460,7 +607,7 @@ function showAIQuestion() {
     const allCorrect = currentCorrect === qs.length;
     currentMonster.defeated = true; drawGame();
     if (allCorrect)
-      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>${monsters.filter(m=>!m.defeated).length>0?'<button class="btn success" onclick="hideDialog()">Continue 🔍</button>':'<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById(\'game2\').scrollIntoView({behavior:\'smooth\'})">⚡ Try Quiz Battle!</button>'}`);
+      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>${monsters.filter(m=>!m.defeated).length>0?'<button class="btn success" onclick="hideDialog()">Continue 🔍</button>':'<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById(\\'game2\\').scrollIntoView({behavior:\\'smooth\\'})">⚡ Try Quiz Battle!</button>'}`);
     else {
       showDialog(`⚠️ ${currentCorrect}/${qs.length} correct. Retry?<br><button class="btn primary" onclick="encounterMonster(currentMonster)">🔄 Retry</button><button class="btn danger" onclick="hideDialog()">Later</button>`);
       currentMonster.defeated = false; drawGame();
@@ -524,14 +671,18 @@ document.querySelectorAll('.dbtn').forEach(btn => {
 });
 
 /* ── INITIAL DIALOG STATE ── */
-// Ensure dialog starts hidden via inline style too
 dialogEl.style.display = 'none';
 
 drawGame();
 
 // ════════════════════════════════════
-// GAME 2: QUIZ BATTLE
+// GAME 2: POKEMON-STYLE QUIZ BATTLE
 // ════════════════════════════════════
+
+const battleCanvas = document.getElementById('bc');
+const bctx = battleCanvas.getContext('2d');
+const BCW = 600, BCH = 340;
+
 const QUIZ_MONSTERS = [
   { name:'Canva Bot', emoji:'🎨', color:'#8B5CF6', hp:5 },
   { name:'Gemini Bot', emoji:'🤖', color:'#4285F4', hp:5 },
@@ -554,22 +705,291 @@ const QUIZ = [
   {q:'Who invented basketball?', opts:['James Naismith','Michael Jordan','William Morgan','John Doe'], ans:0, monster:2},
   {q:'3 goals by 1 player in football is called?', opts:['Hat-trick','Triple','Three-peat','Grand slam'], ans:0, monster:2},
 ];
+
 let pHP=15, mHP=5, mMHP=5, mIdx=0, qIdx=0, bActive=false, cAns=false;
-function loadMonster() {
-  if (mIdx >= QUIZ_MONSTERS.length) { document.getElementById('battle-hud').style.display='none'; document.getElementById('win-screen').style.display='block'; return; }
-  const m=QUIZ_MONSTERS[mIdx]; mHP=m.hp; mMHP=m.hp;
-  document.getElementById('monster-name').textContent=m.name; document.getElementById('monster-sprite').textContent=m.emoji;
-  document.getElementById('monster-name').style.color=m.color; updateHP();
-  document.getElementById('battle-status').textContent=`${m.emoji} ${m.name}! 5 questions to defeat it.`;
-  document.getElementById('battle-start').style.display='inline-block'; document.getElementById('battle-start').textContent=`⚔️ Battle ${m.name}!`;
+
+/* ── DRAW POKEMON-STYLE SPRITES ── */
+function drawBattleBg() {
+  // Sky gradient
+  const grad = bctx.createLinearGradient(0,0,0,BCH);
+  grad.addColorStop(0,'#1a1a3e');
+  grad.addColorStop(0.5,'#2d1b4e');
+  grad.addColorStop(1,'#1a1a2e');
+  bctx.fillStyle = grad;
+  bctx.fillRect(0,0,BCW,BCH);
+  // Ground
+  bctx.fillStyle = '#2a3a1a';
+  bctx.fillRect(0,BCH-60,BCW,60);
+  bctx.fillStyle = '#3a4a2a';
+  bctx.fillRect(0,BCH-60,BCW,3);
+  // Stars
+  bctx.fillStyle = 'rgba(255,255,255,0.3)';
+  for (let i=0;i<30;i++) {
+    const sx = (i*37+13)%BCW, sy = (i*29+7)%(BCH-80);
+    bctx.fillRect(sx,sy,2,2);
+  }
 }
-function startBattle(){bActive=true;cAns=true;document.getElementById('battle-start').style.display='none';nextQ();}
-function nextQ(){if(!bActive||mHP<=0||pHP<=0||qIdx>=QUIZ.length)return;const q=QUIZ[qIdx];document.getElementById('battle-status').textContent=q.q;const ch=document.getElementById('quiz-choices');ch.innerHTML='';cAns=true;q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=o;b.onclick=()=>aQ(i,b);ch.appendChild(b);});}
-function aQ(idx,btn){if(!cAns)return;cAns=false;const q=QUIZ[qIdx];const ch=document.querySelectorAll('#quiz-choices .btn');ch.forEach(b=>b.disabled=true);if(idx===q.ans){mHP--;btn.style.background='#4caf50';document.getElementById('battle-status').textContent=`✅ Correct! ${QUIZ_MONSTERS[mIdx].name} takes 1 damage!`;}else{pHP--;btn.style.background='#e53935';ch[q.ans].style.background='#4caf50';document.getElementById('battle-status').textContent=`❌ Answer: ${q.opts[q.ans]}. You lose 1 HP.`;}
-qIdx++;updateHP();document.getElementById('battle-progress').textContent=`${qIdx}/15 · Monster ${mIdx+1}/3`;
-setTimeout(()=>{if(mHP<=0){document.getElementById('battle-status').textContent=`🎉 ${QUIZ_MONSTERS[mIdx].name} defeated!`;document.getElementById('quiz-choices').innerHTML='';setTimeout(()=>{mIdx++;loadMonster();},1200);}else if(pHP<=0){document.getElementById('battle-status').textContent='💀 You fainted!';document.getElementById('quiz-choices').innerHTML='';setTimeout(resetGame2,1500);}else{nextQ();}},1000);}
-function updateHP(){document.getElementById('monster-hp-txt').textContent=`HP ${Math.max(0,mHP)}/${mMHP}`;document.getElementById('player-hp-txt').textContent=`HP ${Math.max(0,pHP)}/15`;document.getElementById('monster-hp-bar').style.width=`${(mHP/mMHP)*100}%`;document.getElementById('player-hp-bar').style.width=`${(pHP/15)*100}%`;}
-function resetGame2(){pHP=15;mIdx=0;qIdx=0;bActive=false;document.getElementById('win-screen').style.display='none';document.getElementById('battle-hud').style.display='block';document.getElementById('quiz-choices').innerHTML='';document.getElementById('battle-progress').textContent='15 questions · 3 monsters';loadMonster();}
+
+function drawPixelMonster(cx, cy, size, color, emoji, isPlayer) {
+  const s = size || 60;
+  // body
+  bctx.fillStyle = color;
+  if (isPlayer) {
+    // Player sprite: kid with cap
+    bctx.fillRect(cx-12,cy-25,24,20); // head
+    bctx.fillRect(cx-14,cy-5,28,22);  // body
+    bctx.fillRect(cx-18,cy,5,18);     // left leg
+    bctx.fillRect(cx+13,cy,5,18);     // right leg
+    bctx.fillRect(cx-18,cy-8,6,15);   // left arm
+    bctx.fillRect(cx+12,cy-8,6,15);   // right arm
+    // cap
+    bctx.fillStyle = '#e53935';
+    bctx.fillRect(cx-14,cy-28,28,5);
+    bctx.fillRect(cx-8,cy-32,16,5);
+    // face
+    bctx.fillStyle='#fff'; bctx.fillRect(cx-6,cy-20,3,3); bctx.fillRect(cx+3,cy-20,3,3);
+    bctx.fillStyle='#000'; bctx.fillRect(cx-5,cy-19,2,2); bctx.fillRect(cx+4,cy-19,2,2);
+    bctx.fillStyle='#ffd700'; bctx.fillRect(cx-2,cy-14,4,2);
+  } else {
+    // Pokemon-style monster body
+    // Main body - rounded chunky shape
+    bctx.fillRect(cx-s/2+8,cy-s/2+10,s-16,s-16);
+    bctx.fillRect(cx-s/2+4,cy-s/2+14,s-8,s-12);
+    // Head extension
+    bctx.fillRect(cx-s/2+10,cy-s/2,s-20,14);
+    // Eyes (big, pokemon-like)
+    bctx.fillStyle='#fff';
+    bctx.fillRect(cx-s/4-3,cy-s/4+2,8,8);
+    bctx.fillRect(cx+s/4-5,cy-s/4+2,8,8);
+    bctx.fillStyle='#000';
+    bctx.fillRect(cx-s/4-1,cy-s/4+4,5,5);
+    bctx.fillRect(cx+s/4-3,cy-s/4+4,5,5);
+    // Mouth
+    bctx.fillStyle='#ffd700';
+    bctx.fillRect(cx-5,cy+s/4-4,10,3);
+    // Feet
+    bctx.fillStyle = color;
+    bctx.fillRect(cx-s/2+6,cy+s/2-6,10,6);
+    bctx.fillRect(cx+s/2-16,cy+s/2-6,10,6);
+    // Arms
+    bctx.fillRect(cx-s/2-4,cy-5,8,16);
+    bctx.fillRect(cx+s/2-4,cy-5,8,16);
+    // Glow aura
+    bctx.shadowColor = color; bctx.shadowBlur = 15;
+    bctx.fillStyle = 'rgba(255,255,255,0.05)';
+    bctx.fillRect(cx-s/2,cy-s/2,s,s);
+    bctx.shadowBlur = 0;
+    // Emoji badge on chest
+    bctx.font='20px monospace'; bctx.textAlign='center'; bctx.textBaseline='middle';
+    bctx.fillStyle='#fff';
+    bctx.fillText(emoji, cx, cy+2);
+  }
+}
+
+function drawBattleScene() {
+  drawBattleBg();
+  // Monster (left side, bigger)
+  const mx = 160, my = BCH-100;
+  drawPixelMonster(mx, my, 80, QUIZ_MONSTERS[mIdx]?.color||'#888', QUIZ_MONSTERS[mIdx]?.emoji||'?', false);
+  // Player (right side)
+  const px = 440, py = BCH-95;
+  drawPixelMonster(px, py, 55, '#4fc3f7', '🧑', true);
+  // Name tags
+  bctx.font='bold 12px monospace'; bctx.textAlign='center'; bctx.fillStyle='#aaa';
+  if (QUIZ_MONSTERS[mIdx]) {
+    bctx.fillStyle = QUIZ_MONSTERS[mIdx].color;
+    bctx.fillText(QUIZ_MONSTERS[mIdx].name, mx, 35);
+  }
+  bctx.fillStyle='#4fc3f7'; bctx.fillText('YOU', px, 35);
+}
+
+/* ── ATTACK ANIMATIONS ── */
+function screenShake() {
+  const scene = document.getElementById('battle-scene');
+  scene.classList.remove('shake');
+  void scene.offsetWidth;
+  scene.classList.add('shake');
+  setTimeout(() => scene.classList.remove('shake'), 350);
+}
+
+function flashEffect() {
+  const scene = document.getElementById('battle-scene');
+  const flash = document.createElement('div');
+  flash.className = 'flash-overlay';
+  scene.appendChild(flash);
+  setTimeout(() => flash.remove(), 200);
+}
+
+function slashEffect(fromRight) {
+  const scene = document.getElementById('battle-scene');
+  const slash = document.createElement('div');
+  slash.className = 'slash-arc';
+  slash.style.background = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M10 90 L90 10' stroke='${fromRight?'%234fc3f7':'%23ff6b35'}' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Cpath d='M30 95 L95 30' stroke='%23fff' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") center/100px no-repeat`;
+  if (fromRight) slash.style.transform = 'scaleX(-1)';
+  scene.appendChild(slash);
+  setTimeout(() => slash.remove(), 350);
+}
+
+function showDamageNum(x, y, dmg, isHeal) {
+  const scene = document.getElementById('battle-scene');
+  const el = document.createElement('div');
+  el.className = 'dmg-num' + (isHeal ? ' heal' : '');
+  el.textContent = isHeal ? `+${dmg}` : `-${dmg}`;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  scene.appendChild(el);
+  setTimeout(() => el.remove(), 900);
+}
+
+function animateMonsterHit() {
+  screenShake();
+  flashEffect();
+  slashEffect(false);
+  const rect = battleCanvas.getBoundingClientRect();
+  const scale = rect.width / BCW;
+  showDamageNum(160*scale, 100*scale, 1, false);
+  // Flash monster on canvas
+  const mcolor = QUIZ_MONSTERS[mIdx]?.color || '#fff';
+  bctx.fillStyle = 'rgba(255,255,255,0.3)';
+  bctx.fillRect(100, BCH-160, 120, 140);
+  setTimeout(() => { drawBattleScene(); updateHPDisplay(); }, 200);
+}
+
+function animatePlayerHit() {
+  screenShake();
+  flashEffect();
+  slashEffect(true);
+  const rect = battleCanvas.getBoundingClientRect();
+  const scale = rect.width / BCW;
+  showDamageNum(440*scale, 100*scale, 1, false);
+  bctx.fillStyle = 'rgba(255,255,255,0.3)';
+  bctx.fillRect(380, BCH-160, 120, 140);
+  setTimeout(() => { drawBattleScene(); updateHPDisplay(); }, 200);
+}
+
+function animateHeal(text) {
+  const rect = battleCanvas.getBoundingClientRect();
+  const scale = rect.width / BCW;
+  showDamageNum(440*scale, 80*scale, 0, true);
+}
+
+/* ── BATTLE LOGIC ── */
+function loadMonster() {
+  if (mIdx >= QUIZ_MONSTERS.length) {
+    document.getElementById('battle-hud').style.display='none';
+    document.getElementById('win-screen').style.display='block';
+    return;
+  }
+  const m=QUIZ_MONSTERS[mIdx]; mHP=m.hp; mMHP=m.hp;
+  document.getElementById('monster-label').textContent=m.name;
+  document.getElementById('monster-label').style.color=m.color;
+  document.getElementById('battle-status').textContent=`${m.emoji} ${m.name} appeared! Answer 5 questions to defeat it.`;
+  document.getElementById('battle-start').style.display='inline-block';
+  document.getElementById('battle-start').textContent=`⚔️ Battle ${m.name}!`;
+  updateHPDisplay();
+  drawBattleScene();
+}
+
+function startBattle(){
+  bActive=true; cAns=true;
+  document.getElementById('battle-start').style.display='none';
+  document.getElementById('battle-status').textContent='⚔️ FIGHT!';
+  nextQ();
+}
+
+function nextQ(){
+  if(!bActive||mHP<=0||pHP<=0||qIdx>=QUIZ.length) return;
+  const q=QUIZ[qIdx];
+  document.getElementById('battle-status').textContent=q.q;
+  const ch=document.getElementById('quiz-choices');
+  ch.innerHTML='';
+  cAns=true;
+  q.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.className='qbtn';
+    b.textContent=o;
+    b.onclick=()=>aQ(i,b);
+    ch.appendChild(b);
+  });
+  // scroll battle into view on mobile
+  ch.querySelector('.qbtn')?.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function aQ(idx,btn){
+  if(!cAns) return;
+  cAns=false;
+  const q=QUIZ[qIdx];
+  const ch=document.querySelectorAll('.qbtn');
+  ch.forEach(b=>b.disabled=true);
+  
+  if(idx===q.ans){
+    mHP--;
+    btn.classList.add('correct');
+    document.getElementById('battle-status').textContent=`✅ Correct! ${QUIZ_MONSTERS[mIdx].name} -1 HP!`;
+    animateMonsterHit();
+  } else {
+    pHP--;
+    btn.classList.add('wrong');
+    ch[q.ans].classList.add('reveal');
+    document.getElementById('battle-status').textContent=`❌ ${q.opts[q.ans]}. You lose 1 HP!`;
+    animatePlayerHit();
+  }
+  qIdx++;
+  updateHPDisplay();
+  document.getElementById('battle-progress').textContent=`${qIdx}/15 · Monster ${mIdx+1}/3`;
+  
+  setTimeout(()=>{
+    if(mHP<=0){
+      document.getElementById('battle-status').textContent=`🎉 ${QUIZ_MONSTERS[mIdx].name} defeated!`;
+      document.getElementById('quiz-choices').innerHTML='';
+      // Show next wave button or win
+      setTimeout(()=>{
+        mIdx++;
+        if(mIdx < QUIZ_MONSTERS.length){
+          const ch = document.getElementById('quiz-choices');
+          ch.innerHTML = `<div style="text-align:center;grid-column:1/-1;">
+            <button class="battle-btn next-wave" onclick="loadMonster()">➡️ Next: ${QUIZ_MONSTERS[mIdx].name}!</button>
+          </div>`;
+          document.getElementById('battle-status').textContent = `🏆 ${QUIZ_MONSTERS[mIdx-1].name} defeated! Prepare for ${QUIZ_MONSTERS[mIdx].name}...`;
+        } else {
+          loadMonster();
+        }
+      }, 1000);
+    } else if(pHP<=0){
+      document.getElementById('battle-status').textContent='💀 You fainted! Try again!';
+      document.getElementById('quiz-choices').innerHTML='';
+      setTimeout(resetGame2, 2000);
+    } else {
+      nextQ();
+    }
+  }, 1200);
+}
+
+function updateHPDisplay(){
+  document.getElementById('monster-hp-txt').textContent=`HP ${Math.max(0,mHP)}/${mMHP}`;
+  document.getElementById('player-hp-txt').textContent=`HP ${Math.max(0,pHP)}/15`;
+  
+  const mBar=document.getElementById('monster-hp-bar');
+  const pBar=document.getElementById('player-hp-bar');
+  mBar.style.width=`${(mHP/mMHP)*100}%`;
+  pBar.style.width=`${(pHP/15)*100}%`;
+  
+  // Color change based on HP
+  mBar.className = 'hp-fill ' + (mHP/mMHP > 0.5 ? 'green' : mHP/mMHP > 0.25 ? 'yellow' : 'red');
+  pBar.className = 'hp-fill ' + (pHP/15 > 0.5 ? 'green' : pHP/15 > 0.25 ? 'yellow' : 'red');
+}
+
+function resetGame2(){
+  pHP=15; mIdx=0; qIdx=0; bActive=false;
+  document.getElementById('win-screen').style.display='none';
+  document.getElementById('battle-hud').style.display='block';
+  document.getElementById('quiz-choices').innerHTML='';
+  document.getElementById('battle-progress').textContent='15 questions · 3 monsters';
+  loadMonster();
+}
+
+// Initial draw
+drawBattleScene();
 resetGame2();
 </script>
 </body>
