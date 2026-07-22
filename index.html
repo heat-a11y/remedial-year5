@@ -731,141 +731,150 @@ function drawRect(x, y, w, h, color) {
   bctx.fillRect(x, y, w, h);
 }
 
+// ─── PICHU (smallest, round yellow, big round ears) ───
 function drawPichu(cx, cy) {
-  // Tail (tiny zigzag)
-  drawRect(cx + 28, cy - 10, 18, 5, '#D4A017');
-  drawRect(cx + 34, cy - 16, 5, 6, '#D4A017');
+  // Tail
+  drawRect(cx+26, cy-14, 22, 5, '#C8A000');
+  drawRect(cx+36, cy-20, 5, 6, '#C8A000');
   // Feet
-  drawRect(cx - 10, cy + 32, 10, 6, '#222');
-  drawRect(cx + 4, cy + 32, 10, 6, '#222');
-  // Body (round yellow blob)
-  drawRound(cx, cy + 6, 28, '#FEE440');
-  drawRound(cx, cy + 6, 26, '#FFF176');
-  // Ears (big round)
-  drawRound(cx - 20, cy - 24, 13, '#FEE440');
-  drawRound(cx + 22, cy - 24, 13, '#FEE440');
-  drawRound(cx - 20, cy - 24, 10, '#222');
-  drawRound(cx + 22, cy - 24, 10, '#222');
-  drawRound(cx - 20, cy - 24, 8, '#FEE440');
-  drawRound(cx + 22, cy - 24, 8, '#FEE440');
-  // Eyes
-  drawRound(cx - 9, cy, 4, '#222');
-  drawRound(cx + 9, cy, 4, '#222');
-  drawRound(cx - 8, cy - 1, 1.5, '#fff');
-  drawRound(cx + 10, cy - 1, 1.5, '#fff');
-  // Mouth
-  drawRect(cx - 3, cy + 6, 6, 2, '#222');
-  // Cheeks
-  drawRound(cx - 16, cy + 4, 5, '#e53935');
-  drawRound(cx + 16, cy + 4, 5, '#e53935');
-}
-
-function drawPikachu(cx, cy) {
-  // Tail (lightning bolt)
-  drawRect(cx + 32, cy - 28, 20, 6, '#D4A017');
-  drawRect(cx + 42, cy - 38, 6, 16, '#D4A017');
-  drawRect(cx + 48, cy - 38, 8, 6, '#8B4513');
-  // Feet
-  drawRect(cx - 14, cy + 36, 12, 7, '#222');
-  drawRect(cx + 4, cy + 36, 12, 7, '#222');
+  drawRect(cx-12, cy+30, 10, 6, '#333');
+  drawRect(cx+4, cy+30, 10, 6, '#333');
+  // Body glow
+  drawRound(cx, cy+4, 32, 'rgba(254,228,64,0.2)');
   // Body
-  drawOval(cx - 2, cy + 4, 26, 34, '#FEE440');
-  // Brown back stripes
-  drawRect(cx - 16, cy - 6, 6, 12, '#8B4513');
-  drawRect(cx - 18, cy + 8, 6, 10, '#8B4513');
-  // Head
-  drawRound(cx - 2, cy - 26, 24, '#FEE440');
-  // Ears (pointy)
-  drawTri(cx - 22, cy - 52, 14, 28, '#FEE440');
-  drawTri(cx + 20, cy - 52, 14, 28, '#FEE440');
-  drawTri(cx - 22, cy - 52, 8, 14, '#222');
-  drawTri(cx + 20, cy - 52, 8, 14, '#222');
+  drawRound(cx, cy+6, 28, '#FEE440');
+  drawRound(cx, cy+6, 25, '#FFEB66');
+  // Ears (big round with clear black tips)
+  drawRound(cx-22, cy-26, 14, '#FEE440');
+  drawRound(cx+22, cy-26, 14, '#FEE440');
+  drawRound(cx-22, cy-30, 9, '#222');
+  drawRound(cx+22, cy-30, 9, '#222');
   // Eyes
-  drawRound(cx - 10, cy - 28, 5, '#222');
-  drawRound(cx + 8, cy - 28, 5, '#222');
-  drawRound(cx - 9, cy - 29, 2, '#fff');
-  drawRound(cx + 9, cy - 29, 2, '#fff');
-  // Mouth
-  drawRect(cx - 4, cy - 18, 8, 2, '#222');
-  // Cheeks (red)
-  drawRound(cx - 20, cy - 22, 7, '#e53935');
-  drawRound(cx + 18, cy - 22, 7, '#e53935');
-  // Arms
-  drawRect(cx - 28, cy - 4, 8, 5, '#FEE440');
-  drawRect(cx + 22, cy - 4, 8, 5, '#FEE440');
-  drawRound(cx - 28, cy - 4, 4, '#FEE440');
-  drawRound(cx + 28, cy - 4, 4, '#FEE440');
+  drawRound(cx-10, cy+1, 5, '#222');
+  drawRound(cx+10, cy+1, 5, '#222');
+  drawRound(cx-9, cy-1, 2, '#fff');
+  drawRound(cx+11, cy-1, 2, '#fff');
+  // Mouth "w"
+  drawRect(cx-4, cy+9, 8, 2, '#222');
+  drawRect(cx-3, cy+8, 6, 1, '#222');
+  // Red cheeks
+  drawRound(cx-18, cy+5, 6, 'rgba(229,57,53,0.5)');
+  drawRound(cx+18, cy+5, 6, 'rgba(229,57,53,0.5)');
 }
 
+// ─── PIKACHU (medium, pointed ears, lightning tail) ───
+function drawPikachu(cx, cy) {
+  // Tail
+  drawRect(cx+34, cy-26, 24, 6, '#C8A000');
+  drawRect(cx+46, cy-38, 6, 18, '#C8A000');
+  drawRect(cx+52, cy-38, 10, 6, '#8B4513');
+  // Feet
+  drawRect(cx-16, cy+36, 14, 7, '#333');
+  drawRect(cx+4, cy+36, 14, 7, '#333');
+  // Body
+  drawOval(cx-2, cy+4, 30, 38, '#FEE440');
+  drawOval(cx-2, cy+5, 27, 35, '#FFEB66');
+  // Brown stripes
+  drawRect(cx-20, cy-10, 7, 14, '#8B4513');
+  drawRect(cx-22, cy+6, 7, 12, '#8B4513');
+  // Head
+  drawRound(cx-2, cy-28, 26, '#FEE440');
+  drawRound(cx-2, cy-28, 23, '#FFEB66');
+  // Pointy ears
+  drawTri(cx-24, cy-54, 16, 30, '#FEE440');
+  drawTri(cx+22, cy-54, 16, 30, '#FEE440');
+  drawTri(cx-24, cy-54, 10, 16, '#222');
+  drawTri(cx+22, cy-54, 10, 16, '#222');
+  // Eyes
+  drawRound(cx-11, cy-30, 6, '#222');
+  drawRound(cx+9, cy-30, 6, '#222');
+  drawRound(cx-10, cy-31, 2.5, '#fff');
+  drawRound(cx+10, cy-31, 2.5, '#fff');
+  // Mouth
+  drawRect(cx-5, cy-20, 10, 2, '#222');
+  drawRect(cx-3, cy-21, 6, 1, '#222');
+  // Red cheeks
+  drawRound(cx-22, cy-24, 8, '#e53935');
+  drawRound(cx+20, cy-24, 8, '#e53935');
+  // Arms
+  drawRect(cx-30, cy-4, 10, 6, '#FEE440');
+  drawRect(cx+22, cy-4, 10, 6, '#FEE440');
+}
+
+// ─── RAICHU (largest, orange, long ears, flat tail) ───
 function drawRaichu(cx, cy) {
   // Tail (flat paddle)
-  drawRect(cx + 34, cy - 30, 22, 8, '#C07000');
-  drawRect(cx + 50, cy - 36, 14, 20, '#C07000');
-  drawRect(cx + 56, cy - 36, 8, 6, '#8B4513');
+  drawRect(cx+36, cy-30, 26, 8, '#C07000');
+  drawRect(cx+54, cy-38, 16, 24, '#C07000');
+  drawRect(cx+60, cy-38, 10, 8, '#8B4513');
   // Feet
-  drawRect(cx - 16, cy + 42, 14, 8, '#222');
-  drawRect(cx + 6, cy + 42, 14, 8, '#222');
-  // Body (larger, wider)
-  drawOval(cx - 2, cy + 4, 32, 40, '#FF9F00');
-  // Head (larger)
-  drawRound(cx - 2, cy - 30, 28, '#FF9F00');
-  // Ears (longer)
-  drawTri(cx - 26, cy - 62, 16, 34, '#FF9F00');
-  drawTri(cx + 24, cy - 62, 16, 34, '#FF9F00');
-  drawTri(cx - 26, cy - 62, 10, 18, '#222');
-  drawTri(cx + 24, cy - 62, 10, 18, '#222');
+  drawRect(cx-18, cy+42, 16, 8, '#333');
+  drawRect(cx+6, cy+42, 16, 8, '#333');
+  // Body
+  drawOval(cx-2, cy+6, 36, 44, '#FF9F00');
+  drawOval(cx-2, cy+7, 33, 40, '#FFB833');
+  // Head
+  drawRound(cx-2, cy-32, 30, '#FF9F00');
+  drawRound(cx-2, cy-32, 27, '#FFB833');
+  // Long pointy ears
+  drawTri(cx-28, cy-64, 18, 36, '#FF9F00');
+  drawTri(cx+26, cy-64, 18, 36, '#FF9F00');
+  drawTri(cx-28, cy-64, 12, 20, '#222');
+  drawTri(cx+26, cy-64, 12, 20, '#222');
   // Eyes
-  drawRound(cx - 12, cy - 32, 6, '#222');
-  drawRound(cx + 10, cy - 32, 6, '#222');
-  drawRound(cx - 11, cy - 33, 2.5, '#fff');
-  drawRound(cx + 11, cy - 33, 2.5, '#fff');
+  drawRound(cx-13, cy-34, 7, '#222');
+  drawRound(cx+11, cy-34, 7, '#222');
+  drawRound(cx-12, cy-35, 3, '#fff');
+  drawRound(cx+12, cy-35, 3, '#fff');
   // Mouth
-  drawRect(cx - 5, cy - 21, 10, 2.5, '#222');
+  drawRect(cx-6, cy-23, 12, 3, '#222');
   // Cheeks
-  drawRound(cx - 22, cy - 26, 8, '#e53935');
-  drawRound(cx + 20, cy - 26, 8, '#e53935');
+  drawRound(cx-24, cy-28, 9, '#e53935');
+  drawRound(cx+22, cy-28, 9, '#e53935');
+  // Belly pattern
+  drawRect(cx-10, cy+6, 20, 10, '#E08800');
+  drawRect(cx-10, cy+20, 20, 8, '#E08800');
   // Arms
-  drawRect(cx - 34, cy - 4, 10, 6, '#FF9F00');
-  drawRect(cx + 26, cy - 4, 10, 6, '#FF9F00');
-  drawRound(cx - 34, cy - 4, 5, '#FF9F00');
-  drawRound(cx + 32, cy - 4, 5, '#FF9F00');
-  // Belly mark
-  drawRect(cx - 8, cy + 8, 16, 8, '#E08800');
-  drawRect(cx - 8, cy + 18, 16, 6, '#E08800');
+  drawRect(cx-36, cy-4, 12, 8, '#FF9F00');
+  drawRect(cx+26, cy-4, 12, 8, '#FF9F00');
 }
 
+// ─── STUDENT (young kid, blue uniform, brown hair) ───
 function drawStudent(cx, cy) {
   // Shoes
-  drawRect(cx - 12, cy + 42, 12, 6, '#222');
-  drawRect(cx + 2, cy + 42, 12, 6, '#222');
-  // Legs (pants/shorts)
-  drawRect(cx - 10, cy + 24, 8, 18, '#2a4a8a');
-  drawRect(cx + 4, cy + 24, 8, 18, '#2a4a8a');
-  // Arms
-  drawRect(cx - 18, cy - 2, 6, 22, '#FFD5B8');
-  drawRect(cx + 14, cy - 2, 6, 22, '#FFD5B8');
-  // Body (uniform)
-  drawRect(cx - 12, cy, 26, 26, '#4169E1');
-  drawRect(cx - 8, cy + 4, 18, 4, '#2a4a8a');
-  drawRect(cx - 8, cy + 14, 18, 4, '#2a4a8a');
+  drawRect(cx-14, cy+40, 14, 8, '#333');
+  drawRect(cx+2, cy+40, 14, 8, '#333');
+  // Legs
+  drawRect(cx-12, cy+22, 10, 18, '#2a4a8a');
+  drawRect(cx+4, cy+22, 10, 18, '#2a4a8a');
+  // Arms (on sides)
+  drawRect(cx-22, cy-2, 7, 24, '#FFD5B8');
+  drawRect(cx+17, cy-2, 7, 24, '#FFD5B8');
+  // Body (blue uniform)
+  drawRect(cx-15, cy, 32, 24, '#5B7FFF');
+  drawRect(cx-11, cy+4, 24, 4, '#3a5abf');
+  drawRect(cx-11, cy+14, 24, 4, '#3a5abf');
+  // Collar
+  drawRect(cx-6, cy-2, 14, 4, '#3a5abf');
   // Head
-  drawRound(cx - 1, cy - 18, 20, '#FFD5B8');
-  // Hair (brown)
-  drawRect(cx - 18, cy - 32, 36, 10, '#5C4033');
-  drawRound(cx - 18, cy - 28, 6, '#5C4033');
-  drawRound(cx + 16, cy - 28, 6, '#5C4033');
-  drawRect(cx - 16, cy - 34, 6, 4, '#5C4033');
-  drawRect(cx + 10, cy - 34, 6, 4, '#5C4033');
+  drawRound(cx-1, cy-20, 22, '#FFD5B8');
+  drawRound(cx-1, cy-20, 20, '#FFE0C8');
+  // Hair (brown, more visible)
+  drawRect(cx-20, cy-36, 40, 12, '#8B5E3C');
+  drawTri(cx-20, cy-34, 18, 8, '#8B5E3C');
+  drawTri(cx+20, cy-34, 18, 8, '#8B5E3C');
+  drawRect(cx-18, cy-38, 7, 4, '#8B5E3C');
+  drawRect(cx+11, cy-38, 7, 4, '#8B5E3C');
   // Eyes
-  drawRound(cx - 7, cy - 20, 3, '#222');
-  drawRound(cx + 5, cy - 20, 3, '#222');
-  drawRound(cx - 6, cy - 21, 1.5, '#fff');
-  drawRound(cx + 6, cy - 21, 1.5, '#fff');
-  // Mouth (smile)
+  drawRound(cx-8, cy-22, 4, '#222');
+  drawRound(cx+6, cy-22, 4, '#222');
+  drawRound(cx-7, cy-23, 2, '#fff');
+  drawRound(cx+7, cy-23, 2, '#fff');
+  // Smile
   bctx.strokeStyle = '#222';
-  bctx.lineWidth = 1.5;
+  bctx.lineWidth = 2;
   bctx.beginPath();
-  bctx.arc(cx - 1, cy - 13, 5, 0.1, Math.PI - 0.1);
+  bctx.arc(cx-1, cy-14, 6, 0.1, Math.PI - 0.1);
   bctx.stroke();
 }
 
