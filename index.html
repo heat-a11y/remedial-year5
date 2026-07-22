@@ -10,8 +10,6 @@ body{
   background:#1a1a2e;color:#fff;font-family:'Courier New',monospace;
   display:flex;gap:1rem;padding:1rem;min-height:100vh;
 }
-
-/* ── SIDEBAR: Lesson Plan ── */
 .sidebar{
   width:260px;min-width:260px;background:#16213e;border:2px solid #0f3460;border-radius:10px;
   padding:0.8rem;font-size:0.75rem;height:fit-content;position:sticky;top:1rem;
@@ -26,7 +24,7 @@ body{
 .sidebar .badge.m{background:#00A4EF;}
 .sidebar hr{border:none;border-top:1px solid #333;margin:0.5rem 0;}
 
-/* ── SLIDESHOW (embedded) ── */
+/* slideshow shared */
 .slideshow-box{background:#16213e;border:2px solid #0f3460;border-radius:10px;padding:0.8rem;margin-bottom:1rem;}
 .slideshow-box h2{font-size:0.9rem;color:#ffd700;margin-bottom:0.5rem;text-align:center;}
 .slide-container{position:relative;overflow:hidden;border-radius:8px;background:#0d1b2a;min-height:320px;}
@@ -50,13 +48,23 @@ body{
 .slide-nav .dot{width:8px;height:8px;border-radius:50%;background:#555;cursor:pointer;}
 .slide-nav .dot.active{background:#ffd700;}
 
-/* ── MAIN ── */
 .main{flex:1;max-width:680px;}
 h1{font-size:1.2rem;text-align:center;margin-bottom:0.3rem;text-shadow:2px 2px 0 #0f0;}
 h1 span{color:#ff0;}
 
 .game-box{background:#16213e;border:2px solid #0f3460;border-radius:10px;padding:0.8rem;margin-bottom:1rem;}
-canvas{display:block;margin:0 auto;image-rendering:pixelated;background:#2d5a27;width:100%;max-width:600px;border:1px solid #0f3460;border-radius:6px;outline:none;}
+.canvas-wrap{position:relative;display:inline-block;width:100%;max-width:600px;margin:0 auto;display:block;}
+.canvas-wrap canvas{display:block;width:100%;image-rendering:pixelated;border:1px solid #0f3460;border-radius:6px;outline:none;cursor:pointer;}
+.start-overlay{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.7);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;border-radius:6px;
+  cursor:pointer;z-index:10;
+}
+.start-overlay span{font-size:2rem;}
+.start-overlay p{font-size:0.9rem;color:#ffd700;margin-top:0.5rem;font-weight:700;}
+.start-overlay small{font-size:0.7rem;color:#aaa;margin-top:0.3rem;}
+
 .controls{text-align:center;margin-top:0.4rem;font-size:0.75rem;color:#aaa;}
 .controls kbd{background:#333;color:#fff;padding:1px 6px;border-radius:3px;border:1px solid #555;font-size:0.7rem;}
 .dialog{background:rgba(0,0,0,0.92);border:2px solid #ffd700;border-radius:8px;padding:1rem;margin-top:0.5rem;min-height:70px;font-size:0.85rem;display:none;}
@@ -88,15 +96,13 @@ canvas{display:block;margin:0 auto;image-rendering:pixelated;background:#2d5a27;
 .win-screen h2{font-size:1.3rem;color:#ffd700;}
 .monster-link{color:#4fc3f7;text-decoration:underline;cursor:pointer;}
 .monster-link:hover{color:#81d4fa;}
-.progress{text-align:center;font-size:0.75rem;color:#888;margin-bottom:0.3rem;}
-.move-hint{text-align:center;font-size:0.7rem;color:#ffd700;margin-top:0.2rem;display:none;}
 
 @media(max-width:800px){.sidebar{display:none;} .main{max-width:100%;}}
 </style>
 </head>
 <body>
 
-<!-- ═══ SIDEBAR: Lesson Plan ═══ -->
+<!-- SIDEBAR -->
 <div class="sidebar">
   <h2>📋 Lesson Plan</h2>
   <p><strong>Year 5 · English · Sports</strong><br>60 min · Writing focus</p>
@@ -107,197 +113,163 @@ canvas{display:block;margin:0 auto;image-rendering:pixelated;background:#2d5a27;
   <ul>
     <li><strong>10m</strong> Set Induction — sports video</li>
     <li><strong>10m</strong> Pre-lesson — vocab flashcards</li>
-    <li><strong>25m</strong> Lesson Dev — diff. reading + writing</li>
+    <li><strong>25m</strong> Lesson Dev — differentiated reading + writing</li>
     <li><strong>10m</strong> Post-lesson — sports reporters</li>
     <li><strong>5m</strong> Closure — sports charades</li>
   </ul>
   <h3>🤖 AI Remedial Stations</h3>
   <ul>
-    <li><span class="badge c">C</span> <strong>Canva AI</strong> — design Sports Day poster</li>
+    <li><span class="badge c">C</span> <strong>Canva AI</strong> — design poster</li>
     <li><span class="badge g">G</span> <strong>Gemini AI</strong> — writing coach</li>
-    <li><span class="badge m">M</span> <strong>Microsoft AI</strong> — reading & pronunciation</li>
-  </ul>
-  <h3>🎮 Games (Pupil Self-Learning)</h3>
-  <ul>
-    <li><strong>Game 1:</strong> Walk school, visit AI sites, answer 3 Qs each</li>
-    <li><strong>Game 2:</strong> Turn-based quiz — sports + AI tools</li>
+    <li><span class="badge m">M</span> <strong>Microsoft AI</strong> — pronunciation/grammar</li>
   </ul>
   <hr>
   <p style="color:#888;font-size:0.65rem;">remedial-year5 · heat-a11y</p>
 </div>
 
-<!-- ═══ MAIN ═══ -->
+<!-- MAIN -->
 <div class="main">
 
-  <h1>🏫 <span>Sports Day Quest</span></h1>
-  <p style="text-align:center;font-size:0.8rem;color:#aaa;margin-bottom:0.8rem;">
-    ← Lesson plan sidebar · ↓ Slideshow · ↓ Game 1: Explore · ↓ Game 2: Quiz
-  </p>
+<h1>🏫 <span>Sports Day Quest</span></h1>
+<p style="text-align:center;font-size:0.8rem;color:#aaa;margin-bottom:0.8rem;">
+↓ For Teachers: Lesson slideshow &nbsp;·&nbsp; ↓ For Pupils: Learning slideshow &nbsp;·&nbsp; ↓ Games
+</p>
 
-  <!-- ─── SLIDESHOW ─── -->
-  <div class="slideshow-box">
-    <h2>📖 Lesson Slideshow</h2>
-    <div class="slide-container" id="slideshow">
-      <div class="slide active">
-        <h3>🏅 Sports Day — Year 5 English</h3>
-        <p><strong>Theme:</strong> World of Self, Family and Friends — Sports & Activities</p>
-        <p><strong>Focus:</strong> Writing (past simple tense)</p>
-        <p><strong>Duration:</strong> 60 minutes</p>
-        <p><strong>Objectives:</strong> Talk about sports using present simple & continuous. Write about a sports event using past simple.</p>
-      </div>
-      <div class="slide">
-        <h3>🎬 Set Induction (10 min)</h3>
-        <p>Teacher plays a sports video (football, badminton, swimming, basketball). Pupils identify each sport and raise their hand if they play it.</p>
-        <p>Teacher asks: <em>"Do you play ___? How often do you play?"</em></p>
-        <p><strong>Teacher:</strong> Facilitator<br><strong>Students:</strong> Viewer & Responder</p>
-      </div>
-      <div class="slide">
-        <h3>📸 Pre-lesson (10 min)</h3>
-        <p>Teacher presents sports vocabulary & equipment using flashcards.</p>
-        <p><strong>Group activity:</strong> Match sports to equipment on a poster.</p>
-        <p><strong>High readiness:</strong> Add 2 extra sports<br><strong>Low readiness:</strong> Use picture bank with labelled equipment</p>
-        <p><strong>Teacher:</strong> Instructor<br><strong>Students:</strong> Matcher</p>
-      </div>
-      <div class="slide">
-        <h3>📝 Lesson Development (25 min)</h3>
-        <p><strong>"A Day at the Sports Day"</strong> — Differentiated reading & writing.</p>
-        <p><strong>Level A:</strong> Past simple with time phrases<br><strong>Level B:</strong> Past simple, simpler vocab<br><strong>Level C:</strong> Picture-supported, key verbs highlighted</p>
-        <p><strong>Writing task:</strong> High: 6-8 sentences. Intermediate: guided frame. Low: cloze passage.</p>
-      </div>
-      <div class="slide">
-        <h3>🎤 Post-lesson (10 min)</h3>
-        <p><strong>Sports Reporters:</strong> Pupils volunteer to read their writing like a news reporter.</p>
-        <p>Audience gives <strong>Two Stars and a Wish</strong> feedback.</p>
-        <p>High-readiness presenters answer audience questions.</p>
-      </div>
-      <div class="slide">
-        <h3>🎭 Closure (5 min)</h3>
-        <p><strong>Sports Charades:</strong> Teacher calls a sport, one pupil acts it out silently. Class guesses.</p>
-        <p>4 quick rounds. Teacher recaps writing focus (past simple tense).</p>
-      </div>
-      <div class="slide">
-        <h3>🤖 Station A: <span class="ai-tag c">C</span> Canva AI</h3>
-        <p><strong>Poster Design (20 min):</strong> Pupils use Canva AI to create a Sports Day poster.</p>
-        <p><strong>Prompt:</strong> <em>"Design a sports day poster with: We ran, we jumped, we won!"</em></p>
-        <p>Canva AI generates visuals instantly. Pupils add 3-5 past tense sentences.</p>
-        <p><strong>AI Integration:</strong> Text-to-design for sport illustrations and layouts.</p>
-      </div>
-      <div class="slide">
-        <h3>🤖 Station B: <span class="ai-tag g">G</span> Gemini AI</h3>
-        <p><strong>Writing Coach (20 min):</strong> Pupils open Gemini and use the prompt:</p>
-        <p><em>"Help me write 4 sentences about my Sports Day using past tense."</em></p>
-        <p><strong>Low readiness:</strong> "Give me 3 simple sentences about Sports Day."</p>
-        <p><strong>High readiness:</strong> "Check my sentences — which verbs need past tense?"</p>
-        <p><strong>AI Integration:</strong> Instant, patient one-on-one writing support.</p>
-      </div>
-      <div class="slide">
-        <h3>⚡ Station C: <span class="ai-tag m">M</span> Microsoft AI</h3>
-        <p><strong>Reading & Pronunciation (20 min):</strong> Pupils use Copilot or Microsoft Translator.</p>
-        <p><strong>Activities:</strong></p>
-        <ul>
-          <li>Type a sport sentence, hear it spoken aloud</li>
-          <li>Ask Copilot: <em>"Correct my sentence: Yesterday I play football"</em></li>
-          <li>Listen to correct pronunciation</li>
-        </ul>
-        <p><strong>AI Integration:</strong> Text-to-speech builds reading fluency.</p>
-      </div>
-      <div class="slide">
-        <h3>🏆 Moral Values & Assessment</h3>
-        <p><strong>Moral Values:</strong> Teamwork · Sportsmanship · Perseverance · Healthy lifestyle</p>
-        <p><strong>CCE:</strong> Language, Physical Education, Creativity, Digital Literacy</p>
-        <p><strong>Assessment:</strong> Rekod Transit — Listening (L), Speaking (S), Reading (R), Writing (W), Oral (O)</p>
-        <p><strong>Reflection:</strong> Listening strong. Wen Yong & Maxime top. Darsshan improved significantly.</p>
-      </div>
-    </div>
-    <div class="slide-nav">
-      <button class="btn prev" onclick="prevSlide()">◀ Prev</button>
-      <div class="dots" id="slide-dots"></div>
-      <button class="btn next" onclick="nextSlide()">Next ▶</button>
-    </div>
+<!-- ─── TEACHER SLIDESHOW ─── -->
+<div class="slideshow-box" id="teacher-ss">
+  <h2>📖 For Teachers — Lesson Plan</h2>
+  <div class="slide-container" id="t-slides">
+    <div class="slide active"><h3>🏅 Sports Day — Year 5 English</h3><p><strong>Theme:</strong> World of Self, Family and Friends — Sports & Activities</p><p><strong>Focus:</strong> Writing (past simple tense)</p><p><strong>Duration:</strong> 60 minutes</p><p><strong>Objectives:</strong> Talk about sports using present simple & continuous. Write about a sports event using past simple.</p></div>
+    <div class="slide"><h3>🎬 Set Induction (10 min)</h3><p>Teacher plays a sports video (football, badminton, swimming, basketball). Pupils identify each sport and raise their hand if they play it.</p><p>Teacher asks: <em>"Do you play ___? How often do you play?"</em></p><p><strong>Teacher:</strong> Facilitator<br><strong>Students:</strong> Viewer & Responder</p></div>
+    <div class="slide"><h3>📸 Pre-lesson (10 min)</h3><p>Teacher presents sports vocabulary & equipment using flashcards.</p><p><strong>Group activity:</strong> Match sports to equipment on a poster.</p><p><strong>High readiness:</strong> Add 2 extra sports<br><strong>Low readiness:</strong> Use picture bank with labelled equipment</p></div>
+    <div class="slide"><h3>📝 Lesson Development (25 min)</h3><p><strong>"A Day at the Sports Day"</strong> — Differentiated reading & writing.</p><p><strong>Level A:</strong> Past simple with time phrases<br><strong>Level B:</strong> Past simple, simpler vocab<br><strong>Level C:</strong> Picture-supported, key verbs highlighted</p><p><strong>Writing:</strong> High: 6-8 sentences. Intermediate: guided frame. Low: cloze passage.</p></div>
+    <div class="slide"><h3>🎤 Post-lesson (10 min)</h3><p><strong>Sports Reporters:</strong> Pupils read writing like a news reporter. Audience gives <strong>Two Stars and a Wish</strong>. High-readiness presenters answer audience questions.</p></div>
+    <div class="slide"><h3>🎭 Closure (5 min)</h3><p><strong>Sports Charades:</strong> Teacher calls a sport, one pupil acts it out silently. Class guesses. 4 rounds. Recap past simple tense.</p></div>
+    <div class="slide"><h3>🤖 Station A: <span class="ai-tag c">C</span> Canva AI</h3><p><strong>Poster Design (20 min):</strong> Canva AI text-to-design. <em>Prompt: "Design a sports day poster with: We ran, we jumped, we won!"</em> Pupils add 3-5 past tense sentences.</p></div>
+    <div class="slide"><h3>🤖 Station B: <span class="ai-tag g">G</span> Gemini AI</h3><p><strong>Writing Coach (20 min):</strong> "Help me write 4 sentences about my Sports Day using past tense." Low readiness: "Give me 3 simple sentences." High readiness: "Check which verbs need past tense."</p></div>
+    <div class="slide"><h3>⚡ Station C: <span class="ai-tag m">M</span> Microsoft AI</h3><p><strong>Reading & Pronunciation (20 min):</strong> Copilot/Translator. Type a sentence, hear it spoken. Ask: "Correct my grammar: Yesterday I play football."</p></div>
   </div>
-
-  <!-- ─── GAME 1: SCHOOL EXPLORER ─── -->
-  <div class="game-box">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">
-      <span style="font-weight:700;font-size:0.9rem;">🏫 School Explorer — Walk into <span style="color:#ff0;">★</span> monsters</span>
-      <span style="font-size:0.7rem;color:#888;" id="defeated-count">Monsters: 0/3</span>
-    </div>
-    <canvas id="gc" width="600" height="400" tabindex="0"></canvas>
-    <div class="move-hint" id="move-hint">⬆⬇⬅➡  Click the game area first, then use arrow keys or WASD</div>
-    <div class="controls">
-      <kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> to move &nbsp;·&nbsp; Walk into <span style="color:#ff0;">★</span> to battle
-    </div>
-    <div class="dialog" id="dialog"></div>
-  </div>
-
-  <!-- ─── GAME 2: QUIZ BATTLE ─── -->
-  <div class="game-box" id="game2">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-      <span style="font-weight:700;font-size:0.9rem;">⚡ Sports & AI Quiz Battle</span>
-      <span style="font-size:0.7rem;color:#888;" id="battle-progress">15 questions · 3 monsters</span>
-    </div>
-    <div class="battle-hud" id="battle-hud">
-      <div class="row">
-        <div><span class="monster-name" id="monster-name">Canva Bot</span> <span class="hp-text" id="monster-hp-txt">HP 5/5</span></div>
-        <div class="monster-sprite" id="monster-sprite">🎨</div>
-        <div style="text-align:right"><span id="player-name">You</span> <span class="hp-text" id="player-hp-txt">HP 15/15</span></div>
-      </div>
-      <div class="row">
-        <div class="hp-bar"><div class="fill monster" id="monster-hp-bar" style="width:100%"></div></div>
-        <div class="hp-bar"><div class="fill player" id="player-hp-bar" style="width:100%"></div></div>
-      </div>
-      <div class="status-text" id="battle-status">Press Start to begin!</div>
-      <div class="choices" id="quiz-choices"></div>
-      <div style="text-align:center;margin-top:0.4rem;">
-        <button class="btn primary" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
-        <button class="btn danger" onclick="resetGame2()">🔄 Reset</button>
-      </div>
-    </div>
-    <div class="win-screen" id="win-screen">
-      <h2>🏆 YOU ARE THE CHAMPION!</h2>
-      <p>You defeated all 3 AI monsters and mastered sports + AI tool knowledge!</p>
-      <p style="margin-top:0.8rem;">🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot</p>
-      <button class="btn primary" style="margin-top:1rem;" onclick="resetGame2()">🔄 Play Again</button>
-    </div>
+  <div class="slide-nav">
+    <button class="btn prev" onclick="slideMove('t',-1)">◀ Prev</button>
+    <div class="dots" id="t-dots"></div>
+    <button class="btn next" onclick="slideMove('t',1)">Next ▶</button>
   </div>
 </div>
 
-<script>
-// ═══════════════════════════════════════════════
-// SLIDESHOW
-// ═══════════════════════════════════════════════
-let slideIdx = 0;
-const slides = document.querySelectorAll('#slideshow .slide');
-const dots = document.getElementById('slide-dots');
+<!-- ─── PUPIL SLIDESHOW ─── -->
+<div class="slideshow-box" id="pupil-ss">
+  <h2>👧👦 For Pupils — Your Sports Day Lesson</h2>
+  <div class="slide-container" id="p-slides">
+    <div class="slide active"><h3>🏅 Welcome to Sports Day!</h3><p>Today we are going to learn about <strong>sports</strong> and <strong>write about Sports Day</strong>.</p><p>You will learn to:</p><ul><li>Talk about sports you play</li><li>Write about a sports day using <strong>past tense</strong> (yesterday, last Saturday)</li><li>Use AI tools to help you!</li></ul></div>
+    <div class="slide"><h3>⚽ Let's Watch Some Sports!</h3><p>Your teacher will show a video. Look at the sports and <strong>raise your hand</strong> if you play them!</p><p><strong>Questions to think about:</strong></p><ul><li>"Do you play football?"</li><li>"How often do you play?"</li><li>"What is your favourite sport?"</li></ul></div>
+    <div class="slide"><h3>🎒 Sports Equipment Matching</h3><p>Match the sport to its equipment!</p><ul><li>⚽ Football → Boots & Ball</li><li>🏸 Badminton → Racket & Shuttlecock</li><li>🏀 Basketball → Hoop & Ball</li><li>🏊 Swimming → Goggles & Cap</li><li>🚴 Cycling → Helmet & Bike</li></ul></div>
+    <div class="slide"><h3>📖 Read About Sports Day</h3><p>Your teacher will give you a story about a school Sports Day.</p><p><strong>Look for past tense words:</strong></p><ul><li>"Last Saturday, the Sports Day <strong>began</strong> at 8 am."</li><li>"First, we <strong>played</strong> football."</li><li>"Then we <strong>ran</strong> a race."</li><li>"Finally, we <strong>celebrated</strong> our winners!"</li></ul></div>
+    <div class="slide"><h3>✏️ Write Your Own Sports Day Story</h3><p>Now it's your turn! Write about a sports day you remember.</p><p><strong>Sentence starters:</strong></p><ul><li>"Last year, our school held a Sports Day..."</li><li>"First, we played..."</li><li>"Then, I ran in the..."</li><li>"I felt happy because..."</li></ul></div>
+    <div class="slide"><h3>🎤 Be a Sports Reporter!</h3><p>Read your writing to the class like a <strong>TV sports reporter</strong>!</p><p>Stand at the front and read loudly and clearly.</p><p>Your friends will give you <strong>Two Stars and a Wish</strong> — two things you did well and one thing to improve.</p></div>
+    <div class="slide"><h3>🎭 Sports Charades</h3><p>Your teacher calls out a sport. One person <strong>acts it out silently</strong>. The class guesses!</p><p>No talking — only actions! Can your friends guess your sport?</p></div>
+    <div class="slide"><h3>🎨 Station A: Canva AI</h3><p>Use <strong>Canva AI</strong> to design a Sports Day poster!</p><p><span class="ai-tag c">C</span> <strong>Go to:</strong> canva.com</p><p><strong>Type this:</strong> "Design a sports day poster with: We ran, we jumped, we won!"</p><p>Add 3-5 sentences about your sports experience.</p></div>
+    <div class="slide"><h3>🤖 Station B: Gemini AI</h3><p>Use <strong>Gemini</strong> as your writing coach!</p><p><span class="ai-tag g">G</span> <strong>Go to:</strong> gemini.google.com</p><p><strong>Type this:</strong> "Help me write 4 sentences about my school Sports Day using past tense."</p><p>Read what Gemini writes, then write your own!</p></div>
+    <div class="slide"><h3>⚡ Station C: Microsoft AI</h3><p>Use <strong>Microsoft Copilot</strong> for grammar help!</p><p><span class="ai-tag m">M</span> <strong>Go to:</strong> copilot.microsoft.com</p><p><strong>Type:</strong> "Yesterday I play football"</p><p><strong>Ask:</strong> "Can you correct my grammar?"</p><p>Then write the correct sentence in your book!</p></div>
+  </div>
+  <div class="slide-nav">
+    <button class="btn prev" onclick="slideMove('p',-1)">◀ Prev</button>
+    <div class="dots" id="p-dots"></div>
+    <button class="btn next" onclick="slideMove('p',1)">Next ▶</button>
+  </div>
+</div>
 
-function initDots() {
+<!-- ─── GAME 1 ─── -->
+<div class="game-box">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">
+    <span style="font-weight:700;font-size:0.9rem;">🏫 School Explorer</span>
+    <span style="font-size:0.7rem;color:#888;" id="defeated-count">Monsters: 0/3</span>
+  </div>
+  <div class="canvas-wrap" id="canvas-wrap">
+    <canvas id="gc" width="600" height="400"></canvas>
+    <div class="start-overlay" id="start-overlay">
+      <span>🎮</span>
+      <p>Click to Start!</p>
+      <small>Then use arrow keys, WASD, or click to move</small>
+    </div>
+  </div>
+  <div class="controls"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp;·&nbsp; Click to move &nbsp;·&nbsp; Walk into <span style="color:#ff0;">★</span></div>
+  <div class="dialog" id="dialog"></div>
+</div>
+
+<!-- ─── GAME 2 ─── -->
+<div class="game-box" id="game2">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+    <span style="font-weight:700;font-size:0.9rem;">⚡ Sports & AI Quiz Battle</span>
+    <span style="font-size:0.7rem;color:#888;" id="battle-progress">15 questions · 3 monsters</span>
+  </div>
+  <div class="battle-hud" id="battle-hud">
+    <div class="row">
+      <div><span class="monster-name" id="monster-name">Canva Bot</span> <span class="hp-text" id="monster-hp-txt">HP 5/5</span></div>
+      <div class="monster-sprite" id="monster-sprite">🎨</div>
+      <div style="text-align:right"><span id="player-name">You</span> <span class="hp-text" id="player-hp-txt">HP 15/15</span></div>
+    </div>
+    <div class="row">
+      <div class="hp-bar"><div class="fill monster" id="monster-hp-bar" style="width:100%"></div></div>
+      <div class="hp-bar"><div class="fill player" id="player-hp-bar" style="width:100%"></div></div>
+    </div>
+    <div class="status-text" id="battle-status">Press Start to begin!</div>
+    <div class="choices" id="quiz-choices"></div>
+    <div style="text-align:center;margin-top:0.4rem;">
+      <button class="btn primary" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
+      <button class="btn danger" onclick="resetGame2()">🔄 Reset</button>
+    </div>
+  </div>
+  <div class="win-screen" id="win-screen">
+    <h2>🏆 YOU ARE THE CHAMPION!</h2>
+    <p>You defeated all 3 AI monsters and mastered sports + AI tool knowledge!</p>
+    <p style="margin-top:0.8rem;">🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot</p>
+    <button class="btn primary" style="margin-top:1rem;" onclick="resetGame2()">🔄 Play Again</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ════════════════════════════════════
+// SLIDESHOWS
+// ════════════════════════════════════
+const slideSets = { t:'t-slides', p:'p-slides' };
+const dotSets  = { t:'t-dots',   p:'p-dots' };
+const slideIdx = { t:0, p:0 };
+
+function initSlides(key) {
+  const container = document.getElementById(slideSets[key]);
+  const dots = document.getElementById(dotSets[key]);
+  const slides = container.querySelectorAll('.slide');
   dots.innerHTML = '';
   slides.forEach((_, i) => {
     const d = document.createElement('span');
     d.className = 'dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goSlide(i);
+    d.onclick = () => goSlide(key, i);
     dots.appendChild(d);
   });
 }
 
-function goSlide(n) {
+function goSlide(key, n) {
+  const container = document.getElementById(slideSets[key]);
+  const slides = container.querySelectorAll('.slide');
+  const dots = document.getElementById(dotSets[key]).querySelectorAll('.dot');
   slides.forEach(s => s.classList.remove('active'));
-  dots.querySelectorAll('.dot').forEach(d => d.classList.remove('active'));
-  slideIdx = (n + slides.length) % slides.length;
-  slides[slideIdx].classList.add('active');
-  dots.querySelectorAll('.dot')[slideIdx].classList.add('active');
+  dots.forEach(d => d.classList.remove('active'));
+  slideIdx[key] = (n + slides.length) % slides.length;
+  slides[slideIdx[key]].classList.add('active');
+  dots[slideIdx[key]].classList.add('active');
 }
 
-function nextSlide() { goSlide(slideIdx + 1); }
-function prevSlide() { goSlide(slideIdx - 1); }
-initDots();
+function slideMove(key, dir) { goSlide(key, slideIdx[key] + dir); }
+initSlides('t'); initSlides('p');
 
-// ═══════════════════════════════════════════════
-// GAME 1: SCHOOL EXPLORER
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════
+// GAME 1
+// ════════════════════════════════════
 const canvas = document.getElementById('gc');
 const ctx = canvas.getContext('2d');
 const TILE = 20, COLS = 30, ROWS = 20;
+let gameActive = false;
 
 const MAP = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
@@ -321,13 +293,11 @@ const MAP = [
   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
-
 const MONSTERS = [
-  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', url:'https://canva.com', task:'1. Go to canva.com\n2. Type: "Sports Day poster"\n3. Add words: We ran, we jumped, we won!\n4. Customize with AI images.' },
-  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', url:'https://gemini.google.com', task:'1. Go to gemini.google.com\n2. Type: "4 sentences about my Sports Day using past tense"\n3. Read what Gemini writes.\n4. Write your own version.' },
-  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', url:'https://copilot.microsoft.com', task:'1. Go to copilot.microsoft.com\n2. Type: "Yesterday I play football"\n3. Ask: "Correct my grammar"\n4. Use the corrected sentence.' },
+  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', url:'https://canva.com', task:'1. Go to canva.com\n2. Type: "Sports Day poster"\n3. Add: We ran, we jumped, we won!' },
+  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', url:'https://gemini.google.com', task:'1. Go to gemini.google.com\n2. Type: "4 sentences about Sports Day using past tense"\n3. Write your own version.' },
+  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', url:'https://copilot.microsoft.com', task:'1. Go to copilot.microsoft.com\n2. Type: "Yesterday I play football"\n3. Ask: Correct my grammar.' },
 ];
-
 const AI_QUESTIONS = {
   'Canva Bot': [
     { q:'What does Canva AI help you create?', opts:['A Sports Day poster','A football','A song','A video game'], ans:0 },
@@ -335,26 +305,25 @@ const AI_QUESTIONS = {
     { q:'Canva AI can generate what?', opts:['Images and designs','Only text','Only music','Only videos'], ans:0 },
   ],
   'Gemini Bot': [
-    { q:'What can Gemini help you with in this lesson?', opts:['Writing sentences about Sports Day','Playing football','Drawing pictures','Cooking'], ans:0 },
-    { q:'Which tense should you use when writing about Sports Day?', opts:['Past tense','Future tense','Present continuous','Present perfect'], ans:0 },
-    { q:'How do you ask Gemini for help?', opts:['By typing a question or prompt','Clicking a button','Drawing','Email'], ans:0 },
+    { q:'What can Gemini help you with?', opts:['Writing Sports Day sentences','Playing football','Drawing pictures','Cooking'], ans:0 },
+    { q:'Which tense for Sports Day writing?', opts:['Past tense','Future tense','Present continuous','Present perfect'], ans:0 },
+    { q:'How do you ask Gemini for help?', opts:['Type a prompt or question','Click a button','Draw something','Send an email'], ans:0 },
   ],
   'Microsoft Bot': [
-    { q:'Microsoft Copilot can help you check your...', opts:['Grammar and sentences','Basketball skills','Shoe size','Lunch menu'], ans:0 },
-    { q:'What was the incorrect sentence example?', opts:['"Yesterday I play football"','"Yesterday I played football"','"I play football yesterday"','"I am playing football"'], ans:0 },
-    { q:'What is the correct past tense of "play"?', opts:['played','playing','plays','will play'], ans:0 },
+    { q:'Copilot can help you check your...', opts:['Grammar and sentences','Basketball skills','Shoe size','Lunch menu'], ans:0 },
+    { q:'What was the wrong sentence example?', opts:['"Yesterday I play football"','"Yesterday I played football"','"I play football yesterday"','"I am playing football"'], ans:0 },
+    { q:'Correct past tense of "play"?', opts:['played','playing','plays','will play'], ans:0 },
   ],
 };
 
 let player = { x:1, y:1 };
 let monsters = MONSTERS.map(m => ({...m, defeated:false}));
 let dialogEl = document.getElementById('dialog');
-let currentMonster = null;
-let currentQIdx = 0;
-let currentCorrect = 0;
-let moveHint = document.getElementById('move-hint');
+let currentMonster = null, currentQIdx = 0, currentCorrect = 0;
+let moveQueue = [];
+let moveTimer = null;
 
-function focusCanvas() { canvas.focus(); moveHint.style.display = 'none'; }
+/* ── DRAWING ── */
 function drawPixelChar(cx, cy, color) {
   const x = cx * TILE, y = cy * TILE;
   ctx.fillStyle = color;
@@ -362,22 +331,19 @@ function drawPixelChar(cx, cy, color) {
   ctx.fillRect(x+2, y+9, TILE-4, TILE-7);
   ctx.fillRect(x+2, y+14, 4, TILE-14);
   ctx.fillRect(x+TILE-6, y+14, 4, TILE-14);
-  ctx.fillStyle = '#fff';
-  ctx.fillRect(x+6, y+5, 3, 3); ctx.fillRect(x+TILE-9, y+5, 3, 3);
-  ctx.fillStyle = '#000';
-  ctx.fillRect(x+7, y+6, 2, 2); ctx.fillRect(x+TILE-8, y+6, 2, 2);
+  ctx.fillStyle = '#fff'; ctx.fillRect(x+6, y+5, 3, 3); ctx.fillRect(x+TILE-9, y+5, 3, 3);
+  ctx.fillStyle = '#000'; ctx.fillRect(x+7, y+6, 2, 2); ctx.fillRect(x+TILE-8, y+6, 2, 2);
 }
 
 function drawMonster(cx, cy, m) {
-  const x = cx * TILE, y = cy * TILE;
-  ctx.font = '18px monospace'; ctx.textAlign = 'center';
+  const x=cx*TILE, y=cy*TILE;
+  ctx.font='18px monospace'; ctx.textAlign='center';
+  ctx.fillStyle = '#fff';
   ctx.fillText(m.emoji, x+TILE/2, y+TILE-2);
   if (!m.defeated) {
     ctx.shadowColor = m.color; ctx.shadowBlur = 10;
-    ctx.fillText(m.emoji, x+TILE/2, y+TILE-2);
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#ff0'; ctx.font = '10px monospace';
-    ctx.fillText('★', x+TILE/2, y-2);
+    ctx.fillText(m.emoji, x+TILE/2, y+TILE-2); ctx.shadowBlur = 0;
+    ctx.fillStyle = '#ff0'; ctx.font='10px monospace'; ctx.fillText('★', x+TILE/2, y-2);
   }
 }
 
@@ -401,8 +367,9 @@ function drawGame() {
   document.getElementById('defeated-count').textContent = `Monsters: ${monsters.filter(m=>m.defeated).length}/3`;
 }
 
+/* ── MOVEMENT ── */
 function movePlayer(dx, dy) {
-  if (dialogEl.style.display !== 'none') return;
+  if (!gameActive || dialogEl.style.display !== 'none') return;
   const nx=player.x+dx, ny=player.y+dy;
   if (nx<0||nx>=COLS||ny<0||ny>=ROWS||MAP[ny][nx]===1) return;
   player.x=nx; player.y=ny; drawGame();
@@ -412,14 +379,59 @@ function movePlayer(dx, dy) {
   });
 }
 
+/* ── CLICK TO MOVE ── */
+function clickMove(e) {
+  if (!gameActive || dialogEl.style.display !== 'none') return;
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const mx = Math.floor((e.clientX - rect.left) * scaleX / TILE);
+  const my = Math.floor((e.clientY - rect.top) * scaleY / TILE);
+  if (mx<0||mx>=COLS||my<0||my>=ROWS||MAP[my][mx]===1) return;
+  if (mx===player.x && my===player.y) return;
+  // Simple BFS path
+  const path = findPath(player.x, player.y, mx, my);
+  if (path.length > 0) {
+    moveQueue = path;
+    if (moveTimer) clearInterval(moveTimer);
+    moveTimer = setInterval(stepPath, 150);
+  }
+}
+
+function findPath(sx, sy, ex, ey) {
+  const visited = new Set();
+  const queue = [[sx, sy, []]];
+  while (queue.length > 0) {
+    const [cx, cy, p] = queue.shift();
+    if (cx===ex && cy===ey) return p;
+    const key = cx+','+cy;
+    if (visited.has(key)) continue;
+    visited.add(key);
+    for (const [dx, dy] of [[0,1],[0,-1],[1,0],[-1,0]]) {
+      const nx=cx+dx, ny=cy+dy;
+      if (nx>=0&&nx<COLS&&ny>=0&&ny<ROWS&&MAP[ny][nx]!==1&&!visited.has(nx+','+ny))
+        queue.push([nx, ny, [...p, [dx, dy]]]);
+    }
+  }
+  return [];
+}
+
+function stepPath() {
+  if (moveQueue.length === 0 || !gameActive) { clearInterval(moveTimer); moveTimer=null; return; }
+  const [dx, dy] = moveQueue.shift();
+  movePlayer(dx, dy);
+  if (moveQueue.length === 0) { clearInterval(moveTimer); moveTimer=null; }
+}
+
+/* ── MONSTER ENCOUNTER ── */
 function encounterMonster(m) {
   currentMonster = m;
   showDialog(`<b>${m.emoji} ${m.name} found!</b><br><br>
     <b>Step 1:</b> Visit <a href="${m.url}" target="_blank" class="monster-link">${m.name} → ${m.url}</a><br>
     <span style="font-size:0.75rem;color:#aaa;">${m.task.replace(/\n/g,'<br>')}</span><br><br>
-    <b>Step 2:</b> After exploring, answer 3 questions!<br><br>
+    <b>Step 2:</b> Answer 3 questions!<br>
     <button class="btn primary" onclick="startAIQuestions()">📝 Answer questions</button>
-    <button class="btn danger" onclick="hideDialog()">🏃 Come back later</button>`);
+    <button class="btn danger" onclick="hideDialog()">🏃 Later</button>`);
 }
 
 function startAIQuestions() {
@@ -432,25 +444,17 @@ function showAIQuestion() {
   const qs = AI_QUESTIONS[currentMonster.name];
   if (currentQIdx >= qs.length) {
     const allCorrect = currentCorrect === qs.length;
-    currentMonster.defeated = true;
-    drawGame();
-    if (allCorrect) {
-      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>All questions correct!<br><br>
-        ${monsters.filter(m=>!m.defeated).length > 0 ?
-          `<button class="btn success" onclick="hideDialog()">Continue 🔍</button>` :
-          `<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById('game2').scrollIntoView({behavior:'smooth'})">⚡ Try the Quiz Battle!</button>`}`);
-    } else {
-      showDialog(`⚠️ ${currentCorrect}/${qs.length} correct. Try again!<br>
-        <button class="btn primary" onclick="encounterMonster(currentMonster)">🔄 Retry</button>
-        <button class="btn danger" onclick="hideDialog()">Later</button>`);
-      currentMonster.defeated = false;
-      drawGame();
+    currentMonster.defeated = true; drawGame();
+    if (allCorrect)
+      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>${monsters.filter(m=>!m.defeated).length>0?'<button class="btn success" onclick="hideDialog()">Continue 🔍</button>':'<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById(\'game2\').scrollIntoView({behavior:\'smooth\'})">⚡ Try Quiz Battle!</button>'}`);
+    else {
+      showDialog(`⚠️ ${currentCorrect}/${qs.length} correct. Retry?<br><button class="btn primary" onclick="encounterMonster(currentMonster)">🔄 Retry</button><button class="btn danger" onclick="hideDialog()">Later</button>`);
+      currentMonster.defeated = false; drawGame();
     }
     return;
   }
   const q = qs[currentQIdx];
-  let html = `<div style="font-size:0.8rem;color:#888;">Question ${currentQIdx+1}/${qs.length}</div>`;
-  html += `<div class="ai-q"><div class="qn">${q.q}</div>`;
+  let html = `<div style="font-size:0.8rem;color:#888;">Question ${currentQIdx+1}/${qs.length}</div><div class="ai-q"><div class="qn">${q.q}</div>`;
   q.opts.forEach((opt,i) => { html += `<label><input type="radio" name="aiq" value="${i}"> ${opt}</label>`; });
   html += `</div><button class="btn primary" onclick="submitAIAnswer()">✅ Submit</button>`;
   showDialog(html);
@@ -458,76 +462,54 @@ function showAIQuestion() {
 
 function submitAIAnswer() {
   const sel = document.querySelector('input[name="aiq"]:checked');
-  if (!sel) { showDialog(`<div style="color:#ff0;">Please select an answer first!</div><br>${dialogEl.innerHTML.split('<button')[0]}<button class="btn primary" onclick="submitAIAnswer()">✅ Submit</button>`); return; }
+  if (!sel) return;
   const idx = parseInt(sel.value);
-  const qs = AI_QUESTIONS[currentMonster.name];
-  if (idx === qs[currentQIdx].ans) currentCorrect++;
+  if (idx === AI_QUESTIONS[currentMonster.name][currentQIdx].ans) currentCorrect++;
   currentQIdx++;
   showAIQuestion();
 }
 
-function showDialog(html) { dialogEl.innerHTML = html; dialogEl.style.display = 'block'; }
+function showDialog(h) { dialogEl.innerHTML = h; dialogEl.style.display = 'block'; }
 function hideDialog() { dialogEl.style.display = 'none'; }
 
-/* ══════════════════════════════════════
-   KEYBOARD FIX — robust, works everywhere
-   ══════════════════════════════════════ */
+/* ── START GAME ── */
+function startGame() {
+  gameActive = true;
+  document.getElementById('start-overlay').style.display = 'none';
+  canvas.focus();
+}
+
+document.getElementById('start-overlay').addEventListener('click', startGame);
+canvas.addEventListener('click', function(e) {
+  if (!gameActive) { startGame(); return; }
+  clickMove(e);
+});
+
+/* ── KEYBOARD ── */
 (function() {
   const keyMap = {
     'ArrowUp':[0,-1],'ArrowDown':[0,1],'ArrowLeft':[-1,0],'ArrowRight':[1,0],
     'w':[0,-1],'W':[0,-1],'s':[0,1],'S':[0,1],
     'a':[-1,0],'A':[-1,0],'d':[1,0],'D':[1,0]
   };
-  window.addEventListener('keydown', function(e) {
-    // Also try document level
-    handleKey(e);
-  }, false);
-  document.addEventListener('keydown', function(e) {
-    handleKey(e);
-  }, false);
-  function handleKey(e) {
+  function handler(e) {
     const dir = keyMap[e.key];
-    if (dir) {
-      e.preventDefault();
-      e.stopPropagation();
-      movePlayer(dir[0], dir[1]);
-    }
+    if (dir) { e.preventDefault(); e.stopPropagation(); movePlayer(dir[0], dir[1]); }
   }
+  window.addEventListener('keydown', handler, false);
+  document.addEventListener('keydown', handler, false);
 })();
-
-// Click canvas to focus + hide hint
-canvas.addEventListener('click', function() {
-  focusCanvas();
-});
-// Also re-focus after dialog closes
-const origShow = showDialog;
-showDialog = function(html) {
-  origShow(html);
-  // After dialog interaction, re-focus canvas
-  setTimeout(focusCanvas, 100);
-};
-
-window.addEventListener('load', function() {
-  focusCanvas();
-  // If after 2 seconds canvas isn't focused, show hint
-  setTimeout(function() {
-    if (document.activeElement !== canvas) {
-      moveHint.style.display = 'block';
-    }
-  }, 2000);
-});
 
 drawGame();
 
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════
 // GAME 2: QUIZ BATTLE
-// ═══════════════════════════════════════════════
+// ════════════════════════════════════
 const QUIZ_MONSTERS = [
   { name:'Canva Bot', emoji:'🎨', color:'#8B5CF6', hp:5 },
   { name:'Gemini Bot', emoji:'🤖', color:'#4285F4', hp:5 },
   { name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', hp:5 },
 ];
-
 const QUIZ = [
   {q:'Which AI tool helps design a Sports Day poster?', opts:['Canva AI','Gemini','Microsoft Copilot','ChatGPT'], ans:0, monster:0},
   {q:'What do you type into Canva AI to create a design?', opts:['A text prompt','A URL','An email','A phone number'], ans:0, monster:0},
@@ -543,83 +525,24 @@ const QUIZ = [
   {q:'How many players on a basketball team?', opts:['5','7','11','9'], ans:0, monster:2},
   {q:'Correct: "Yesterday I play football"', opts:['"Yesterday I played football"','"Yesterday I playing football"','"Yesterday I will play football"','"Yesterday I am playing football"'], ans:0, monster:2},
   {q:'Who invented basketball?', opts:['James Naismith','Michael Jordan','William Morgan','John Doe'], ans:0, monster:2},
-  {q:'What is 3 goals by one player in football called?', opts:['Hat-trick','Triple','Three-peat','Grand slam'], ans:0, monster:2},
+  {q:'3 goals by 1 player in football is called?', opts:['Hat-trick','Triple','Three-peat','Grand slam'], ans:0, monster:2},
 ];
-
-let playerHP = 15, maxPlayerHP = 15;
-let monsterHP = 5, maxMonsterHP = 5;
-let currentMonsterIdx = 0, quizIdx = 0, battleActive = false, canAnswer = false;
-
+let pHP=15, mHP=5, mMHP=5, mIdx=0, qIdx=0, bActive=false, cAns=false;
 function loadMonster() {
-  if (currentMonsterIdx >= QUIZ_MONSTERS.length) {
-    document.getElementById('battle-hud').style.display = 'none';
-    document.getElementById('win-screen').style.display = 'block';
-    return;
-  }
-  const m = QUIZ_MONSTERS[currentMonsterIdx];
-  monsterHP = m.hp; maxMonsterHP = m.hp;
-  document.getElementById('monster-name').textContent = m.name;
-  document.getElementById('monster-sprite').textContent = m.emoji;
-  document.getElementById('monster-name').style.color = m.color;
-  updateHP();
-  document.getElementById('battle-status').textContent = `${m.emoji} ${m.name}! 5 questions to defeat it.`;
-  document.getElementById('battle-start').style.display = 'inline-block';
-  document.getElementById('battle-start').textContent = `⚔️ Battle ${m.name}!`;
+  if (mIdx >= QUIZ_MONSTERS.length) { document.getElementById('battle-hud').style.display='none'; document.getElementById('win-screen').style.display='block'; return; }
+  const m=QUIZ_MONSTERS[mIdx]; mHP=m.hp; mMHP=m.hp;
+  document.getElementById('monster-name').textContent=m.name; document.getElementById('monster-sprite').textContent=m.emoji;
+  document.getElementById('monster-name').style.color=m.color; updateHP();
+  document.getElementById('battle-status').textContent=`${m.emoji} ${m.name}! 5 questions to defeat it.`;
+  document.getElementById('battle-start').style.display='inline-block'; document.getElementById('battle-start').textContent=`⚔️ Battle ${m.name}!`;
 }
-
-function startBattle() {
-  battleActive = true; canAnswer = true;
-  document.getElementById('battle-start').style.display = 'none';
-  nextQ();
-}
-
-function nextQ() {
-  if (!battleActive) return;
-  if (monsterHP <= 0 || playerHP <= 0 || quizIdx >= QUIZ.length) return;
-  const q = QUIZ[quizIdx];
-  document.getElementById('battle-status').textContent = q.q;
-  const choices = document.getElementById('quiz-choices');
-  choices.innerHTML = ''; canAnswer = true;
-  q.opts.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'btn'; btn.textContent = opt;
-    btn.onclick = () => answerQ(i, btn);
-    choices.appendChild(btn);
-  });
-}
-
-function answerQ(idx, btn) {
-  if (!canAnswer) return; canAnswer = false;
-  const q = QUIZ[quizIdx];
-  const choices = document.querySelectorAll('#quiz-choices .btn');
-  choices.forEach(b => b.disabled = true);
-  if (idx === q.ans) { monsterHP--; btn.style.background='#4caf50'; document.getElementById('battle-status').textContent = `✅ Correct! ${QUIZ_MONSTERS[currentMonsterIdx].name} takes 1 damage!`; }
-  else { playerHP--; btn.style.background='#e53935'; choices[q.ans].style.background='#4caf50'; document.getElementById('battle-status').textContent = `❌ Answer: ${q.opts[q.ans]}. You lose 1 HP.`; }
-  quizIdx++; updateHP();
-  document.getElementById('battle-progress').textContent = `${quizIdx}/15 questions · Monster ${currentMonsterIdx+1}/3`;
-  setTimeout(() => {
-    if (monsterHP <= 0) { document.getElementById('battle-status').textContent = `🎉 ${QUIZ_MONSTERS[currentMonsterIdx].name} defeated!`; document.getElementById('quiz-choices').innerHTML = ''; setTimeout(()=>{currentMonsterIdx++;loadMonster();},1200); }
-    else if (playerHP <= 0) { document.getElementById('battle-status').textContent = '💀 You fainted! Try again.'; document.getElementById('quiz-choices').innerHTML = ''; setTimeout(resetGame2,1500); }
-    else { nextQ(); }
-  }, 1000);
-}
-
-function updateHP() {
-  document.getElementById('monster-hp-txt').textContent = `HP ${Math.max(0,monsterHP)}/${maxMonsterHP}`;
-  document.getElementById('player-hp-txt').textContent = `HP ${Math.max(0,playerHP)}/${maxPlayerHP}`;
-  document.getElementById('monster-hp-bar').style.width = `${(monsterHP/maxMonsterHP)*100}%`;
-  document.getElementById('player-hp-bar').style.width = `${(playerHP/maxPlayerHP)*100}%`;
-}
-
-function resetGame2() {
-  playerHP = maxPlayerHP; currentMonsterIdx = 0; quizIdx = 0; battleActive = false;
-  document.getElementById('win-screen').style.display = 'none';
-  document.getElementById('battle-hud').style.display = 'block';
-  document.getElementById('quiz-choices').innerHTML = '';
-  document.getElementById('battle-progress').textContent = '15 questions · 3 monsters';
-  loadMonster();
-}
-
+function startBattle(){bActive=true;cAns=true;document.getElementById('battle-start').style.display='none';nextQ();}
+function nextQ(){if(!bActive||mHP<=0||pHP<=0||qIdx>=QUIZ.length)return;const q=QUIZ[qIdx];document.getElementById('battle-status').textContent=q.q;const ch=document.getElementById('quiz-choices');ch.innerHTML='';cAns=true;q.opts.forEach((o,i)=>{const b=document.createElement('button');b.className='btn';b.textContent=o;b.onclick=()=>aQ(i,b);ch.appendChild(b);});}
+function aQ(idx,btn){if(!cAns)return;cAns=false;const q=QUIZ[qIdx];const ch=document.querySelectorAll('#quiz-choices .btn');ch.forEach(b=>b.disabled=true);if(idx===q.ans){mHP--;btn.style.background='#4caf50';document.getElementById('battle-status').textContent=`✅ Correct! ${QUIZ_MONSTERS[mIdx].name} takes 1 damage!`;}else{pHP--;btn.style.background='#e53935';ch[q.ans].style.background='#4caf50';document.getElementById('battle-status').textContent=`❌ Answer: ${q.opts[q.ans]}. You lose 1 HP.`;}
+qIdx++;updateHP();document.getElementById('battle-progress').textContent=`${qIdx}/15 · Monster ${mIdx+1}/3`;
+setTimeout(()=>{if(mHP<=0){document.getElementById('battle-status').textContent=`🎉 ${QUIZ_MONSTERS[mIdx].name} defeated!`;document.getElementById('quiz-choices').innerHTML='';setTimeout(()=>{mIdx++;loadMonster();},1200);}else if(pHP<=0){document.getElementById('battle-status').textContent='💀 You fainted!';document.getElementById('quiz-choices').innerHTML='';setTimeout(resetGame2,1500);}else{nextQ();}},1000);}
+function updateHP(){document.getElementById('monster-hp-txt').textContent=`HP ${Math.max(0,mHP)}/${mMHP}`;document.getElementById('player-hp-txt').textContent=`HP ${Math.max(0,pHP)}/15`;document.getElementById('monster-hp-bar').style.width=`${(mHP/mMHP)*100}%`;document.getElementById('player-hp-bar').style.width=`${(pHP/15)*100}%`;}
+function resetGame2(){pHP=15;mIdx=0;qIdx=0;bActive=false;document.getElementById('win-screen').style.display='none';document.getElementById('battle-hud').style.display='block';document.getElementById('quiz-choices').innerHTML='';document.getElementById('battle-progress').textContent='15 questions · 3 monsters';loadMonster();}
 resetGame2();
 </script>
 </body>
