@@ -607,7 +607,7 @@ function showAIQuestion() {
     const allCorrect = currentCorrect === qs.length;
     currentMonster.defeated = true; drawGame();
     if (allCorrect)
-      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>${monsters.filter(m=>!m.defeated).length>0?'<button class="btn success" onclick="hideDialog()">Continue 🔍</button>':'<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById(\\'game2\\').scrollIntoView({behavior:\\'smooth\\'})">⚡ Try Quiz Battle!</button>'}`);
+      showDialog(`🎉 <b>${currentMonster.name} defeated!</b><br>${monsters.filter(m=>!m.defeated).length>0?'<button class="btn success" onclick="hideDialog()">Continue 🔍</button>':'<b>🎊 ALL DEFEATED!</b><br><button class="btn success" onclick="hideDialog();scrollToGame2()">⚡ Try Quiz Battle!</button>'}`);
     else {
       showDialog(`⚠️ ${currentCorrect}/${qs.length} correct. Retry?<br><button class="btn primary" onclick="encounterMonster(currentMonster)">🔄 Retry</button><button class="btn danger" onclick="hideDialog()">Later</button>`);
       currentMonster.defeated = false; drawGame();
@@ -632,6 +632,7 @@ function submitAIAnswer() {
 
 function showDialog(h) { dialogEl.innerHTML = h; dialogEl.style.display = 'block'; }
 function hideDialog() { dialogEl.style.display = 'none'; }
+function scrollToGame2() { hideDialog(); document.getElementById('game2').scrollIntoView({behavior:'smooth'}); }
 
 /* ── START GAME ── */
 function startGame() {
