@@ -96,6 +96,11 @@ h1 span{color:#ff0;}
 .win-screen h2{font-size:1.3rem;color:#ffd700;}
 .monster-link{color:#4fc3f7;text-decoration:underline;cursor:pointer;}
 .monster-link:hover{color:#81d4fa;}
+.dpad{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:0.5rem;}
+.dpad-row{display:flex;gap:2px;justify-content:center;}
+.dbtn{width:44px;height:44px;background:#333;border:2px solid #555;border-radius:8px;color:#fff;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-user-select:none;touch-action:manipulation;}
+.dbtn:hover{background:#555;border-color:#0f3460;}
+.dbtn:active{background:#0f3460;transform:scale(0.92);}
 
 @media(max-width:800px){.sidebar{display:none;} .main{max-width:100%;}}
 </style>
@@ -193,7 +198,12 @@ h1 span{color:#ff0;}
     </div>
   </div>
   <div class="controls"><kbd>↑</kbd><kbd>↓</kbd><kbd>←</kbd><kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> &nbsp;·&nbsp; Click to move &nbsp;·&nbsp; Walk into <span style="color:#ff0;">★</span></div>
-  <div class="dialog" id="dialog"></div>
+  <div class="dialog" id="dialog" style="display:none"></div>
+  <div class="dpad" id="dpad">
+    <div class="dpad-row"><button class="dbtn" data-dx="0" data-dy="-1">▲</button></div>
+    <div class="dpad-row"><button class="dbtn" data-dx="-1" data-dy="0">◀</button><button class="dbtn" data-dx="1" data-dy="0">▶</button></div>
+    <div class="dpad-row"><button class="dbtn" data-dx="0" data-dy="1">▼</button></div>
+  </div>
 </div>
 
 <!-- ─── GAME 2 ─── -->
@@ -369,7 +379,11 @@ function drawGame() {
 
 /* ── MOVEMENT ── */
 function movePlayer(dx, dy) {
-  if (!gameActive || dialogEl.style.display !== 'none') return;
+  if (!gameActive) return;
+  // Check if dialog is actually visible (handles both inline and CSS class)
+  const dialogVisible = dialogEl.style.display === 'block' || 
+    (dialogEl.style.display !== 'none' && window.getComputedStyle(dialogEl).display !== 'none');
+  if (dialogVisible) return;
   const nx=player.x+dx, ny=player.y+dy;
   if (nx<0||nx>=COLS||ny<0||ny>=ROWS||MAP[ny][nx]===1) return;
   player.x=nx; player.y=ny; drawGame();
@@ -499,6 +513,19 @@ canvas.addEventListener('click', function(e) {
   window.addEventListener('keydown', handler, false);
   document.addEventListener('keydown', handler, false);
 })();
+
+/* ── D-PAD BUTTONS ── */
+document.querySelectorAll('.dbtn').forEach(btn => {
+  const dx = parseInt(btn.dataset.dx);
+  const dy = parseInt(btn.dataset.dy);
+  const press = () => { if (gameActive) movePlayer(dx, dy); };
+  btn.addEventListener('mousedown', press);
+  btn.addEventListener('touchstart', e => { e.preventDefault(); press(); });
+});
+
+/* ── INITIAL DIALOG STATE ── */
+// Ensure dialog starts hidden via inline style too
+dialogEl.style.display = 'none';
 
 drawGame();
 
