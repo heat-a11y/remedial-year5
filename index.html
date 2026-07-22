@@ -3,102 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🏫 Sports Day Quest — Pixel Adventure</title>
+<title>🏫 Sports Day Quest — Pixel Adventure + AI Learning</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 body{
-  background:#1a1a2e;font-family:'Courier New',monospace;color:#fff;
-  display:flex;flex-direction:column;align-items:center;padding:1rem;
+  background:#1a1a2e;color:#fff;font-family:'Courier New',monospace;
+  display:flex;gap:1rem;padding:1rem;min-height:100vh;
 }
-h1{font-size:1.3rem;margin:0.5rem 0;text-shadow:2px 2px 0 #0f0;}
+
+/* ── SIDEBAR: Lesson Plan ── */
+.sidebar{
+  width:260px;min-width:260px;background:#16213e;border:2px solid #0f3460;border-radius:10px;
+  padding:0.8rem;font-size:0.75rem;height:fit-content;position:sticky;top:1rem;
+}
+.sidebar h2{font-size:0.9rem;color:#ffd700;margin-bottom:0.5rem;text-align:center;}
+.sidebar h3{font-size:0.8rem;color:#4fc3f7;margin-top:0.6rem;margin-bottom:0.2rem;}
+.sidebar p, .sidebar li{font-size:0.7rem;color:#ccc;line-height:1.5;}
+.sidebar ul{padding-left:1rem;}
+.sidebar .badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:0.6rem;font-weight:700;color:#fff;margin-right:2px;}
+.sidebar .badge.c{background:#8B5CF6;}
+.sidebar .badge.g{background:#4285F4;}
+.sidebar .badge.m{background:#00A4EF;}
+.sidebar hr{border:none;border-top:1px solid #333;margin:0.5rem 0;}
+
+/* ── MAIN ── */
+.main{flex:1;max-width:680px;}
+h1{font-size:1.2rem;text-align:center;margin-bottom:0.3rem;text-shadow:2px 2px 0 #0f0;}
 h1 span{color:#ff0;}
-.game-wrapper{max-width:640px;width:100%;background:#16213e;border:3px solid #0f3460;border-radius:12px;padding:1rem;margin-bottom:1.5rem;}
-canvas{display:block;margin:0 auto;image-rendering:pixelated;background:#2d5a27;width:100%;max-width:600px;border:2px solid #0f3460;border-radius:8px;}
-.controls{text-align:center;margin-top:0.5rem;font-size:0.85rem;color:#aaa;}
-.controls kbd{background:#333;color:#fff;padding:2px 8px;border-radius:4px;border:1px solid #555;}
-.dialog{
-  background:rgba(0,0,0,0.85);border:2px solid #ff0;border-radius:8px;
-  padding:1rem;margin-top:0.5rem;min-height:60px;font-size:0.9rem;
-  display:none;text-align:center;
-}
-.dialog .btn{padding:0.4rem 1.2rem;margin:0.3rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.85rem;}
-.dialog .btn.attack{background:#e53935;color:#fff;}
-.dialog .btn.continue{background:#0f3460;color:#fff;}
-.battle-hud{display:none;background:rgba(0,0,0,0.9);border:2px solid #e53935;border-radius:8px;padding:1rem;margin-top:0.5rem;}
-.battle-hud .row{display:flex;justify-content:space-between;margin-bottom:0.5rem;}
-.battle-hud .hp-bar{background:#333;height:12px;border-radius:6px;overflow:hidden;flex:1;margin:0 0.5rem;}
+
+/* Game 1 */
+.game-box{background:#16213e;border:2px solid #0f3460;border-radius:10px;padding:0.8rem;margin-bottom:1rem;}
+canvas{display:block;margin:0 auto;image-rendering:pixelated;background:#2d5a27;width:100%;max-width:600px;border:1px solid #0f3460;border-radius:6px;outline:none;}
+.controls{text-align:center;margin-top:0.4rem;font-size:0.75rem;color:#aaa;}
+.controls kbd{background:#333;color:#fff;padding:1px 6px;border-radius:3px;border:1px solid #555;font-size:0.7rem;}
+.dialog{background:rgba(0,0,0,0.92);border:2px solid #ffd700;border-radius:8px;padding:1rem;margin-top:0.5rem;min-height:70px;font-size:0.85rem;display:none;}
+.dialog .btn{padding:0.4rem 1rem;margin:0.2rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.8rem;}
+.dialog .btn.primary{background:#0f3460;color:#fff;}
+.dialog .btn.success{background:#4caf50;color:#fff;}
+.dialog .btn.danger{background:#e53935;color:#fff;}
+
+/* AI tool questions */
+.ai-q{background:#1a1a2e;border:1px solid #444;border-radius:6px;padding:0.5rem;margin:0.3rem 0;}
+.ai-q label{display:block;font-size:0.8rem;margin:0.2rem 0;}
+.ai-q input[type=radio]{margin-right:0.3rem;}
+.ai-q .qn{font-weight:700;color:#ffd700;}
+
+/* Game 2 — always visible */
+#game2{display:block;}
+.battle-hud{background:rgba(0,0,0,0.85);border:2px solid #e53935;border-radius:8px;padding:0.8rem;}
+.battle-hud .row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;}
+.battle-hud .hp-bar{background:#333;height:10px;border-radius:5px;overflow:hidden;flex:1;margin:0 0.3rem;}
 .battle-hud .hp-bar .fill{height:100%;transition:width 0.3s;}
 .battle-hud .hp-bar .fill.player{background:#4caf50;}
 .battle-hud .hp-bar .fill.monster{background:#e53935;}
-.battle-hud .choices{display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-top:0.5rem;}
-.battle-hud .choices .btn{padding:0.5rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.8rem;background:#333;color:#fff;}
+.battle-hud .choices{display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;margin-top:0.4rem;}
+.battle-hud .choices .btn{padding:0.4rem;border:none;border-radius:6px;font-weight:700;cursor:pointer;font-family:inherit;font-size:0.75rem;background:#333;color:#fff;text-align:left;}
 .battle-hud .choices .btn:hover{background:#555;}
 .battle-hud .choices .btn:disabled{opacity:0.4;cursor:not-allowed;}
-.monster-sprite{font-size:3rem;text-align:center;line-height:1;}
-.monster-name{font-weight:700;font-size:0.9rem;}
-.hp-text{font-size:0.8rem;}
-.status-text{font-size:0.85rem;min-height:2rem;margin:0.3rem 0;color:#ff0;}
-#game2{display:none;}
-.win-screen{background:linear-gradient(135deg,#1a5c1a,#2d8a2d);border:3px solid #ffd700;border-radius:12px;padding:2rem;text-align:center;margin-top:1rem;display:none;}
-.win-screen h2{font-size:1.5rem;color:#ffd700;margin-bottom:0.5rem;}
-.win-screen p{color:#fff;}
+.monster-sprite{font-size:2.5rem;text-align:center;line-height:1;}
+.hp-text{font-size:0.7rem;}
+.status-text{font-size:0.8rem;min-height:1.5rem;margin:0.2rem 0;color:#ff0;text-align:center;}
+.win-screen{background:linear-gradient(135deg,#1a5c1a,#2d8a2d);border:2px solid #ffd700;border-radius:10px;padding:1.5rem;text-align:center;margin-top:1rem;display:none;}
+.win-screen h2{font-size:1.3rem;color:#ffd700;}
+.monster-link{color:#4fc3f7;text-decoration:underline;cursor:pointer;}
+.monster-link:hover{color:#81d4fa;}
+.progress{text-align:center;font-size:0.75rem;color:#888;margin-bottom:0.3rem;}
 
-/* pixel art helpers */
-.pixel-sprite{display:inline-block;image-rendering:pixelated;}
+@media(max-width:800px){.sidebar{display:none;} .main{max-width:100%;}}
 </style>
 </head>
 <body>
 
-<h1>🏫 <span>Sports Day Quest</span></h1>
-<p style="font-size:0.8rem;color:#aaa;margin-bottom:0.5rem;">Walk around school. Find & defeat 3 monsters. → Arrow keys to move.</p>
-
-<div class="game-wrapper" id="game1">
-  <canvas id="gc" width="600" height="400"></canvas>
-  <div class="controls">⬆⬇⬅➡  Move  ·  Walk into monsters to battle</div>
-  <div class="dialog" id="dialog"></div>
+<!-- ═══ SIDEBAR: Lesson Plan ═══ -->
+<div class="sidebar">
+  <h2>📋 Lesson Plan</h2>
+  <p><strong>Year 5 · English · Sports</strong><br>60 min · Writing focus</p>
+  <hr>
+  <h3>🎯 Objectives</h3>
+  <p>Talk about sports (present simple/continuous). Write about a sports event (past simple).</p>
+  <h3>📝 Activities</h3>
+  <ul>
+    <li><strong>10m</strong> Set Induction — sports video</li>
+    <li><strong>10m</strong> Pre-lesson — vocab flashcards</li>
+    <li><strong>25m</strong> Lesson Dev — diff. reading + writing</li>
+    <li><strong>10m</strong> Post-lesson — sports reporters</li>
+    <li><strong>5m</strong> Closure — sports charades</li>
+  </ul>
+  <h3>🤖 AI Remedial Stations</h3>
+  <ul>
+    <li><span class="badge c">C</span> <strong>Canva AI</strong> — design Sports Day poster. Prompt: "Design a sports day poster with: We ran, we jumped, we won"</li>
+    <li><span class="badge g">G</span> <strong>Gemini AI</strong> — writing coach. Prompt: "Help me write 4 sentences about Sports Day using past tense"</li>
+    <li><span class="badge m">M</span> <strong>Microsoft AI</strong> — reading & pronunciation. Use Translator text-to-speech + Copilot for grammar check</li>
+  </ul>
+  <h3>🎮 Games (Pupil Self-Learning)</h3>
+  <ul>
+    <li><strong>Game 1:</strong> Walk around school, find AI monsters, visit their websites, answer 3 questions each</li>
+    <li><strong>Game 2:</strong> Turn-based quiz battle — sports + AI tool knowledge</li>
+  </ul>
+  <hr>
+  <p style="color:#888;font-size:0.65rem;">remedial-year5 · heat-a11y</p>
 </div>
 
-<div class="game-wrapper" id="game2">
-  <h2 style="text-align:center;font-size:1rem;margin-bottom:0.5rem;">⚡ Sports Quiz Battle — Defeat all 3 monsters!</h2>
-  <div class="battle-hud" id="battle-hud">
-    <div class="row">
-      <div><span class="monster-name" id="monster-name">Canva Bot</span><br><span class="hp-text" id="monster-hp-txt">HP 5/5</span></div>
-      <div style="text-align:right"><span id="player-name">You</span><br><span class="hp-text" id="player-hp-txt">HP 15/15</span></div>
-    </div>
-    <div class="row">
-      <div class="hp-bar"><div class="fill monster" id="monster-hp-bar" style="width:100%"></div></div>
-      <div class="hp-bar"><div class="fill player" id="player-hp-bar" style="width:100%"></div></div>
-    </div>
-    <div class="monster-sprite" id="monster-sprite">🎨</div>
-    <div class="status-text" id="battle-status">Press Start to begin!</div>
-    <div class="choices" id="quiz-choices"></div>
-    <div style="text-align:center;margin-top:0.5rem;">
-      <button class="btn continue" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
-    </div>
-  </div>
-  <div class="win-screen" id="win-screen">
-    <h2>🏆 CHAMPION!</h2>
-    <p>You defeated all 3 AI monsters and mastered your sports vocabulary!</p>
-    <p style="margin-top:1rem;font-size:0.9rem;">🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot</p>
-    <button class="btn continue" style="margin-top:1rem;" onclick="resetGame2()">🔄 Play Again</button>
-  </div>
-</div>
+<!-- ═══ MAIN ═══ -->
+<div class="main">
+  <h1>🏫 <span>Sports Day Quest</span></h1>
+  <p style="text-align:center;font-size:0.8rem;color:#aaa;margin-bottom:0.8rem;">
+    ← Sidebar has the lesson plan. ↓ Game 1: Explore. Then scroll to Game 2: Quiz Battle.
+  </p>
 
-<div style="display:flex;gap:1rem;margin-bottom:1rem;">
-  <button class="btn continue" onclick="document.getElementById('game1').scrollIntoView({behavior:'smooth'})">🏫 Game 1: Explore</button>
-  <button class="btn continue" onclick="startGame2();document.getElementById('game2').scrollIntoView({behavior:'smooth'})">⚡ Game 2: Quiz Battle</button>
+  <!-- ─── GAME 1: SCHOOL EXPLORER ─── -->
+  <div class="game-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem;">
+      <span style="font-weight:700;font-size:0.9rem;">🏫 School Explorer</span>
+      <span style="font-size:0.7rem;color:#888;" id="defeated-count">Monsters: 0/3</span>
+    </div>
+    <canvas id="gc" width="600" height="400" tabindex="0"></canvas>
+    <div class="controls">
+      <kbd>↑</kbd> <kbd>↓</kbd> <kbd>←</kbd> <kbd>→</kbd> or <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move &nbsp;·&nbsp; Walk into <span style="color:#ff0;">★</span> to start
+    </div>
+    <div class="dialog" id="dialog"></div>
+  </div>
+
+  <!-- ─── GAME 2: QUIZ BATTLE ─── -->
+  <div class="game-box" id="game2">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
+      <span style="font-weight:700;font-size:0.9rem;">⚡ Sports & AI Quiz Battle</span>
+      <span style="font-size:0.7rem;color:#888;" id="battle-progress">15 questions · 3 monsters</span>
+    </div>
+    <div class="battle-hud" id="battle-hud">
+      <div class="row">
+        <div><span class="monster-name" id="monster-name">Canva Bot</span> <span class="hp-text" id="monster-hp-txt">HP 5/5</span></div>
+        <div class="monster-sprite" id="monster-sprite">🎨</div>
+        <div style="text-align:right"><span id="player-name">You</span> <span class="hp-text" id="player-hp-txt">HP 15/15</span></div>
+      </div>
+      <div class="row">
+        <div class="hp-bar"><div class="fill monster" id="monster-hp-bar" style="width:100%"></div></div>
+        <div class="hp-bar"><div class="fill player" id="player-hp-bar" style="width:100%"></div></div>
+      </div>
+      <div class="status-text" id="battle-status">Press Start to begin!</div>
+      <div class="choices" id="quiz-choices"></div>
+      <div style="text-align:center;margin-top:0.4rem;">
+        <button class="btn primary" id="battle-start" onclick="startBattle()">⚔️ Start Battle!</button>
+        <button class="btn danger" onclick="resetGame2()">🔄 Reset</button>
+      </div>
+    </div>
+    <div class="win-screen" id="win-screen">
+      <h2>🏆 YOU ARE THE CHAMPION!</h2>
+      <p>You defeated all 3 AI monsters and mastered sports + AI tool knowledge!</p>
+      <p style="margin-top:0.8rem;">🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot</p>
+      <button class="btn primary" style="margin-top:1rem;" onclick="resetGame2()">🔄 Play Again</button>
+    </div>
+  </div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════
-// GAME 1: SCHOOL EXPLORER (Pixel walking game)
+// GAME 1: SCHOOL EXPLORER — Pixel Walking
 // ═══════════════════════════════════════════════
 const canvas = document.getElementById('gc');
 const ctx = canvas.getContext('2d');
-const TILE = 20;
-const COLS = 30, ROWS = 20;
+const TILE = 20, COLS = 30, ROWS = 20;
 
-// School map: 0=floor, 1=wall, 2=desk, 3=door
 const MAP = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
   [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
@@ -122,157 +187,184 @@ const MAP = [
   [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
 ];
 
-// Monster positions (col, row)
 const MONSTERS = [
-  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', hp:5 },
-  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', hp:5 },
-  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', hp:5 },
+  { x:14, y:4,  name:'Canva Bot',     emoji:'🎨', color:'#8B5CF6', url:'https://canva.com', task:'Design a Sports Day poster using Canva AI.\n1. Go to canva.com\n2. Type: "Sports Day poster"\n3. Add these words: We ran, we jumped, we won!\n4. Customize with AI-generated images.' },
+  { x:24, y:10, name:'Gemini Bot',    emoji:'🤖', color:'#4285F4', url:'https://gemini.google.com', task:'Use Gemini to write about Sports Day.\n1. Go to gemini.google.com\n2. Type: "Help me write 4 sentences about my Sports Day using past tense"\n3. Read what Gemini writes.\n4. Write your own version in your exercise book.' },
+  { x:7,  y:15, name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', url:'https://copilot.microsoft.com', task:'Use Microsoft AI for reading & grammar.\n1. Go to copilot.microsoft.com\n2. Type a sports sentence, e.g. "Yesterday I play football"\n3. Ask: "Correct my grammar"\n4. Use the corrected sentence in your writing.' },
 ];
 
-let player = { x:1, y:1, dir:0 };
-let monsters = MONSTERS.map(m => ({...m, defeated:false}));
-let keys = {};
-let dialogEl = document.getElementById('dialog');
-let dialogCallback = null;
+// AI Tool questions for each monster (3 each)
+const AI_QUESTIONS = {
+  'Canva Bot': [
+    { q:'What does Canva AI help you create?', opts:['A Sports Day poster','A football','A song','A video game'], ans:0 },
+    { q:'How do you tell Canva AI what to design?', opts:['By typing a text prompt','By drawing it','By speaking','By clicking random buttons'], ans:0 },
+    { q:'Canva AI can generate what kind of content?', opts:['Images and designs','Only text','Only music','Only videos'], ans:0 },
+  ],
+  'Gemini Bot': [
+    { q:'What can Gemini help you with in this lesson?', opts:['Writing sentences about Sports Day','Playing football','Drawing pictures','Cooking'], ans:0 },
+    { q:'Which tense should you use when writing about Sports Day?', opts:['Past tense','Future tense','Present continuous','Present perfect'], ans:0 },
+    { q:'How do you ask Gemini for help?', opts:['By typing a question or prompt','By clicking a button','By drawing','By email'], ans:0 },
+  ],
+  'Microsoft Bot': [
+    { q:'Microsoft Copilot can help you check your...', opts:['Grammar and sentences','Basketball skills','Shoe size','Lunch menu'], ans:0 },
+    { q:'What did the incorrect sentence say?', opts:['"Yesterday I play football"','"Yesterday I played football"','"I play football yesterday"','"I am playing football"'], ans:0 },
+    { q:'What is the correct past tense of "play"?', opts:['played','playing','plays','will play'], ans:0 },
+  ],
+};
 
-function drawPixelChar(cx, cy, color, size) {
-  const s = size || TILE;
+let player = { x:1, y:1 };
+let monsters = MONSTERS.map(m => ({...m, defeated:false, aiDone:false}));
+let dialogEl = document.getElementById('dialog');
+let currentMonster = null;
+let currentQIdx = 0;
+let currentCorrect = 0;
+
+function focusCanvas() { canvas.focus(); }
+
+function drawPixelChar(cx, cy, color) {
   const x = cx * TILE, y = cy * TILE;
-  // Simple pixel body
   ctx.fillStyle = color;
-  ctx.fillRect(x+4, y+2, s-8, s-6);  // head
-  ctx.fillRect(x+2, y+8, s-4, s-6);  // body
-  ctx.fillRect(x+2, y+14, 4, s-14);  // left leg
-  ctx.fillRect(x+s-6, y+14, 4, s-14); // right leg
-  // Eyes
+  ctx.fillRect(x+4, y+3, TILE-8, TILE-8);
+  ctx.fillRect(x+2, y+9, TILE-4, TILE-7);
+  ctx.fillRect(x+2, y+14, 4, TILE-14);
+  ctx.fillRect(x+TILE-6, y+14, 4, TILE-14);
   ctx.fillStyle = '#fff';
-  ctx.fillRect(x+6, y+4, 3, 3);
-  ctx.fillRect(x+s-9, y+4, 3, 3);
+  ctx.fillRect(x+6, y+5, 3, 3); ctx.fillRect(x+TILE-9, y+5, 3, 3);
   ctx.fillStyle = '#000';
-  ctx.fillRect(x+7, y+5, 2, 2);
-  ctx.fillRect(x+s-8, y+5, 2, 2);
+  ctx.fillRect(x+7, y+6, 2, 2); ctx.fillRect(x+TILE-8, y+6, 2, 2);
 }
 
-function drawMonsterSprite(cx, cy, m) {
+function drawMonster(cx, cy, m) {
   const x = cx * TILE, y = cy * TILE;
-  ctx.font = '18px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText(m.emoji, x + TILE/2, y + TILE - 2);
-  // Glow if not defeated
+  ctx.font = '18px monospace'; ctx.textAlign = 'center';
+  ctx.fillText(m.emoji, x+TILE/2, y+TILE-2);
   if (!m.defeated) {
-    ctx.shadowColor = m.color;
-    ctx.shadowBlur = 8;
-    ctx.fillText(m.emoji, x + TILE/2, y + TILE - 2);
+    ctx.shadowColor = m.color; ctx.shadowBlur = 10;
+    ctx.fillText(m.emoji, x+TILE/2, y+TILE-2);
     ctx.shadowBlur = 0;
+    // Star indicator
+    ctx.fillStyle = '#ff0'; ctx.font = '10px monospace';
+    ctx.fillText('★', x+TILE/2, y-2);
   }
 }
 
 function drawMap() {
-  for (let r=0; r<ROWS; r++) {
-    for (let c=0; c<COLS; c++) {
-      const x = c * TILE, y = r * TILE;
-      switch(MAP[r][c]) {
-        case 0: ctx.fillStyle = '#c8b88a'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#d4c4a0'; ctx.fillRect(x+1,y+1,TILE-2,TILE-2); break;
-        case 1: ctx.fillStyle = '#4a4a5a'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#5a5a6a'; ctx.fillRect(x+2,y+2,TILE-4,TILE-4); break;
-        case 2: ctx.fillStyle = '#8B4513'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#A0522D'; ctx.fillRect(x+1,y+1,TILE-2,TILE-4); break;
-        case 3: ctx.fillStyle = '#654321'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#8B6914'; ctx.fillRect(x+2,y+2,TILE-4,TILE-2); break;
-      }
+  for (let r=0; r<ROWS; r++) for (let c=0; c<COLS; c++) {
+    const x=c*TILE, y=r*TILE;
+    switch(MAP[r][c]) {
+      case 0: ctx.fillStyle='#c8b88a'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#d4c4a0'; ctx.fillRect(x+1,y+1,TILE-2,TILE-2); break;
+      case 1: ctx.fillStyle='#4a4a5a'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#5a5a6a'; ctx.fillRect(x+2,y+2,TILE-4,TILE-4); break;
+      case 2: ctx.fillStyle='#8B4513'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#A0522D'; ctx.fillRect(x+1,y+1,TILE-2,TILE-4); break;
+      case 3: ctx.fillStyle='#654321'; ctx.fillRect(x,y,TILE,TILE); ctx.fillStyle='#8B6914'; ctx.fillRect(x+2,y+2,TILE-4,TILE-2); break;
     }
   }
-  // Draw school label
-  ctx.fillStyle = 'rgba(255,255,255,0.15)';
-  ctx.font = '10px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('🏫 SPORTS DAY', 300, 30);
-  ctx.fillText('🎨', 300, 90);
-  ctx.fillText('🤖', 500, 210);
-  ctx.fillText('⚡', 160, 310);
+  ctx.fillStyle='rgba(255,255,255,0.12)'; ctx.font='9px monospace'; ctx.textAlign='center';
+  ctx.fillText('🏫 SPORTS DAY',300,25);
+  ctx.fillText('🎨',300,88); ctx.fillText('🤖',490,208); ctx.fillText('⚡',150,308);
 }
 
 function drawGame() {
-  ctx.clearRect(0,0,600,400);
-  drawMap();
-  // Draw monsters
-  monsters.forEach(m => drawMonsterSprite(m.x, m.y, m));
-  // Draw player
+  ctx.clearRect(0,0,600,400); drawMap();
+  monsters.forEach(m => drawMonster(m.x, m.y, m));
   drawPixelChar(player.x, player.y, '#ff6b35');
-  // Player hat
-  ctx.fillStyle = '#e53935';
-  ctx.fillRect(player.x*TILE+5, player.y*TILE, TILE-10, 3);
+  ctx.fillStyle='#e53935'; ctx.fillRect(player.x*TILE+5, player.y*TILE, TILE-10, 3);
+  document.getElementById('defeated-count').textContent = `Monsters: ${monsters.filter(m=>m.defeated).length}/3`;
 }
 
 function movePlayer(dx, dy) {
   if (dialogEl.style.display !== 'none') return;
-  const nx = player.x + dx, ny = player.y + dy;
-  if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) return;
-  if (MAP[ny][nx] === 1) return;
-
-  player.x = nx; player.y = ny;
-  player.dir = dx !== 0 ? dx : player.dir;
-  drawGame();
-
-  // Check monster encounter
+  const nx=player.x+dx, ny=player.y+dy;
+  if (nx<0||nx>=COLS||ny<0||ny>=ROWS||MAP[ny][nx]===1) return;
+  player.x=nx; player.y=ny; drawGame();
   monsters.forEach(m => {
     if (m.defeated) return;
-    if (Math.abs(player.x - m.x) + Math.abs(player.y - m.y) <= 1) {
-      encounterMonster(m);
-    }
+    if (Math.abs(player.x-m.x)+Math.abs(player.y-m.y)<=1) encounterMonster(m);
   });
 }
 
 function encounterMonster(m) {
-  showDialog(`⚔️ You encountered <b>${m.name}</b> ${m.emoji}!<br><br>
-    <button class="btn attack" onclick="defeatMonster('${m.name}')">⚡ Attack!</button>
-    <button class="btn continue" onclick="hideDialog()">🏃 Run away</button>`);
+  currentMonster = m;
+  showDialog(`<b>${m.emoji} ${m.name} wants to challenge you!</b><br><br>
+    <b>Step 1:</b> Visit <a href="${m.url}" target="_blank" class="monster-link">${m.name} → ${m.url}</a><br>
+    <span style="font-size:0.75rem;color:#aaa;">${m.task.replace(/\n/g,'<br>')}</span><br><br>
+    <b>Step 2:</b> After you've explored the website, come back and answer 3 questions!<br><br>
+    <button class="btn primary" onclick="startAIQuestions()">📝 I'm ready! Start questions</button>
+    <button class="btn danger" onclick="hideDialog()">🏃 Come back later</button>`);
 }
 
-function defeatMonster(name) {
-  const m = monsters.find(x => x.name === name);
-  if (!m) return;
-  m.defeated = true;
-  hideDialog();
-  drawGame();
+function startAIQuestions() {
+  if (!currentMonster) return;
+  currentQIdx = 0;
+  currentCorrect = 0;
+  showAIQuestion();
+}
 
-  const all = monsters.every(x => x.defeated);
-  if (all) {
-    setTimeout(() => {
-      showDialog(`🎉 <b>ALL MONSTERS DEFEATED!</b><br>
-        You beat 🎨 Canva Bot · 🤖 Gemini Bot · ⚡ Microsoft Bot!<br><br>
-        Now try <b>Game 2</b> — the Sports Quiz Battle!<br>
-        <button class="btn continue" onclick="hideDialog();startGame2();document.getElementById('game2').scrollIntoView({behavior:'smooth'})">⚡ Play Quiz Battle</button>`);
-    }, 300);
-  } else {
-    const left = monsters.filter(x => !x.defeated).length;
-    showDialog(`✅ <b>${m.name}</b> defeated! ${left} more monster${left>1?'s':''} to go.<br>
-      <button class="btn continue" onclick="hideDialog()">Continue exploring 🔍</button>`);
+function showAIQuestion() {
+  const qs = AI_QUESTIONS[currentMonster.name];
+  if (currentQIdx >= qs.length) {
+    const allCorrect = currentCorrect === qs.length;
+    currentMonster.defeated = true;
+    currentMonster.aiDone = true;
+    drawGame();
+    if (allCorrect) {
+      showDialog(`🎉 <b>Perfect! ${currentMonster.name} defeated!</b><br>
+        You answered all questions correctly! The monster retreats!<br><br>
+        ${monsters.filter(m=>!m.defeated).length > 0 ? `<button class="btn success" onclick="hideDialog()">Continue exploring 🔍</button>` : 
+        `<b>🎊 ALL MONSTERS DEFEATED!</b><br><button class="btn success" onclick="hideDialog();document.getElementById('game2').scrollIntoView({behavior:'smooth'})">⚡ Now try the Quiz Battle below!</button>`}`);
+    } else {
+      showDialog(`⚠️ <b>${currentMonster.name} escaped!</b><br>
+        You got ${currentCorrect}/${qs.length} correct. Try again!<br><br>
+        <button class="btn primary" onclick="encounterMonster(currentMonster)">🔄 Try Again</button>
+        <button class="btn danger" onclick="hideDialog()">Come back later</button>`);
+      currentMonster.defeated = false;
+      drawGame();
+    }
+    return;
   }
+  const q = qs[currentQIdx];
+  let html = `<div style="font-size:0.8rem;color:#888;">Question ${currentQIdx+1}/${qs.length}</div>`;
+  html += `<div class="ai-q"><div class="qn">${q.q}</div>`;
+  q.opts.forEach((opt,i) => {
+    html += `<label><input type="radio" name="aiq" value="${i}"> ${opt}</label>`;
+  });
+  html += `</div>`;
+  html += `<button class="btn primary" onclick="submitAIAnswer()">✅ Submit</button>`;
+  showDialog(html);
 }
 
-function showDialog(html) {
-  dialogEl.innerHTML = html;
-  dialogEl.style.display = 'block';
+function submitAIAnswer() {
+  const sel = document.querySelector('input[name="aiq"]:checked');
+  if (!sel) { showDialog(`<div style="color:#ff0;">Please select an answer first!</div><br>${dialogEl.innerHTML.split('<button')[0]}<button class="btn primary" onclick="submitAIAnswer()">✅ Submit</button>`); return; }
+  const idx = parseInt(sel.value);
+  const qs = AI_QUESTIONS[currentMonster.name];
+  if (idx === qs[currentQIdx].ans) currentCorrect++;
+  currentQIdx++;
+  showAIQuestion();
 }
 
-function hideDialog() {
-  dialogEl.style.display = 'none';
-}
+function showDialog(html) { dialogEl.innerHTML = html; dialogEl.style.display = 'block'; }
+function hideDialog() { dialogEl.style.display = 'none'; }
 
+// Keyboard — fix: canvas needs focus + prevent default scrolling
 document.addEventListener('keydown', e => {
-  switch(e.key) {
-    case 'ArrowUp': case 'w': movePlayer(0,-1); break;
-    case 'ArrowDown': case 's': movePlayer(0,1); break;
-    case 'ArrowLeft': case 'a': movePlayer(-1,0); break;
-    case 'ArrowRight': case 'd': movePlayer(1,0); break;
-  }
+  const map = { 'ArrowUp':[0,-1], 'ArrowDown':[0,1], 'ArrowLeft':[-1,0], 'ArrowRight':[1,0], 'w':[0,-1], 's':[0,1], 'a':[-1,0], 'd':[1,0] };
+  const dir = map[e.key];
+  if (dir) { e.preventDefault(); movePlayer(dir[0], dir[1]); }
 });
+// Also click canvas to focus it
+canvas.addEventListener('click', focusCanvas);
+// Auto-focus
+window.addEventListener('load', focusCanvas);
 
-// Touch controls
-document.addEventListener('swipe', e => {}); // placeholder — keyboard only for simplicity
+// Click game box to focus
+document.querySelector('.game-box').addEventListener('click', e => {
+  if (e.target.tagName !== 'CANVAS' && e.target.tagName !== 'BUTTON' && !e.target.closest('.dialog')) focusCanvas();
+});
 
 drawGame();
 
 // ═══════════════════════════════════════════════
-// GAME 2: SPORTS QUIZ BATTLE (Turn-based)
+// GAME 2: SPORTS + AI QUIZ BATTLE (15 questions)
 // ═══════════════════════════════════════════════
 const QUIZ_MONSTERS = [
   { name:'Canva Bot', emoji:'🎨', color:'#8B5CF6', hp:5 },
@@ -280,51 +372,36 @@ const QUIZ_MONSTERS = [
   { name:'Microsoft Bot', emoji:'⚡', color:'#00A4EF', hp:5 },
 ];
 
+// 15 questions — mix of sports AND AI tool knowledge
 const QUIZ = [
-  // Canva Bot (questions 0-4)
-  {q:'Which sport uses a shuttlecock?', opts:['Badminton','Tennis','Football','Basketball'], ans:0},
-  {q:'What do you need to play badminton?', opts:['Racket & Shuttlecock','Bat & Ball','Gloves','Net'], ans:0},
-  {q:'How many players in a badminton singles match?', opts:['2','4','1','6'], ans:0},
-  {q:'What is a shuttlecock made of?', opts:['Feathers & Cork','Rubber','Plastic','Cloth'], ans:0},
-  {q:'Badminton nets are how high?', opts:['1.55m','2m','1m','1.2m'], ans:0},
-  // Gemini Bot (questions 5-9)
-  {q:'How long is a football match?', opts:['90 min','60 min','120 min','45 min'], ans:0},
-  {q:'What colour card sends a player off?', opts:['Red','Yellow','Blue','Green'], ans:0},
-  {q:'How many players on a football team?', opts:['11','9','7','5'], ans:0},
-  {q:'What is a hat-trick in football?', opts:['3 goals by 1 player','3 saves','3 passes','3 fouls'], ans:0},
-  {q:'Where was the 2022 World Cup held?', opts:['Qatar','Brazil','USA','England'], ans:0},
-  // Microsoft Bot (questions 10-14)
-  {q:'How many players on a basketball team?', opts:['5','7','11','9'], ans:0},
-  {q:'What is a slam dunk?', opts:['A type of shot','A foul','A pass','A timeout'], ans:0},
-  {q:'How high is a basketball hoop?', opts:['3.05m','2.5m','3.5m','2m'], ans:0},
-  {q:'Who invented basketball?', opts:['James Naismith','Michael Jordan','William Morgan','John Doe'], ans:0},
-  {q:'How many points is a three-pointer?', opts:['3','2','4','1'], ans:0},
+  // Canva Bot: Sports Day poster + design
+  {q:'Which AI tool helps you design a Sports Day poster?', opts:['Canva AI','Gemini','Microsoft Copilot','ChatGPT'], ans:0, monster:0},
+  {q:'What do you type into Canva AI to create a design?', opts:['A text prompt','A URL','An email','A phone number'], ans:0, monster:0},
+  {q:'In badminton, what is the object called that you hit?', opts:['Shuttlecock','Ball','Puck','Disc'], ans:0, monster:0},
+  {q:'How many players in a badminton singles match?', opts:['2','4','1','6'], ans:0, monster:0},
+  {q:'Canva AI can generate which type of content?', opts:['Images and layouts','Only text','Only numbers','Only music'], ans:0, monster:0},
+
+  // Gemini Bot: Writing coach + football
+  {q:'Which AI can help you write sentences about Sports Day?', opts:['Gemini','Canva AI','Calculator','Maps'], ans:0, monster:1},
+  {q:'What past tense verb means "to run in a race"?', opts:['Ran','Runned','Running','Runs'], ans:0, monster:1},
+  {q:'How long is a standard football match?', opts:['90 minutes','60 minutes','120 minutes','45 minutes'], ans:0, monster:1},
+  {q:'How do you give Gemini a task?', opts:['Type a prompt','Click a picture','Draw a shape','Send an email'], ans:0, monster:1},
+  {q:'Which tense should you use to write about Sports Day?', opts:['Past simple','Future simple','Present continuous','Present perfect'], ans:0, monster:1},
+
+  // Microsoft Bot: Grammar + basketball
+  {q:'Which Microsoft AI tool can check your grammar?', opts:['Copilot','Paint','Excel','WordPad'], ans:0, monster:2},
+  {q:'How many players on a basketball team?', opts:['5','7','11','9'], ans:0, monster:2},
+  {q:'Correct this sentence: "Yesterday I play football"', opts:['"Yesterday I played football"','"Yesterday I playing football"','"Yesterday I will play football"','"Yesterday I am playing football"'], ans:0, monster:2},
+  {q:'Who invented basketball?', opts:['James Naismith','Michael Jordan','William Morgan','John Doe'], ans:0, monster:2},
+  {q:'What is 3 goals by one player in football called?', opts:['Hat-trick','Triple','Three-peat','Grand slam'], ans:0, monster:2},
 ];
 
 let playerHP = 15, maxPlayerHP = 15;
 let monsterHP = 5, maxMonsterHP = 5;
 let currentMonsterIdx = 0;
-let quizOffset = 0;
+let quizIdx = 0;
 let battleActive = false;
 let canAnswer = false;
-
-function startGame2() {
-  document.getElementById('game2').style.display = 'block';
-  resetGame2();
-}
-
-function resetGame2() {
-  playerHP = maxPlayerHP;
-  currentMonsterIdx = 0;
-  quizOffset = 0;
-  document.getElementById('win-screen').style.display = 'none';
-  document.getElementById('battle-start').style.display = 'inline-block';
-  document.getElementById('battle-hud').style.display = 'block';
-  document.getElementById('quiz-choices').innerHTML = '';
-  document.getElementById('battle-status').textContent = 'Press Start to begin!';
-  hideDialog2();
-  loadMonster();
-}
 
 function loadMonster() {
   if (currentMonsterIdx >= QUIZ_MONSTERS.length) {
@@ -333,46 +410,41 @@ function loadMonster() {
     return;
   }
   const m = QUIZ_MONSTERS[currentMonsterIdx];
-  monsterHP = m.hp;
-  maxMonsterHP = m.hp;
+  monsterHP = m.hp; maxMonsterHP = m.hp;
   document.getElementById('monster-name').textContent = m.name;
   document.getElementById('monster-sprite').textContent = m.emoji;
   document.getElementById('monster-name').style.color = m.color;
   updateHP();
-  document.getElementById('battle-status').textContent = `${m.name} appears! ${m.emoji} Answer 5 questions to defeat it!`;
+  document.getElementById('battle-status').textContent = `${m.emoji} ${m.name} appears! 5 questions to defeat it.`;
   document.getElementById('battle-start').style.display = 'inline-block';
   document.getElementById('battle-start').textContent = `⚔️ Battle ${m.name}!`;
 }
 
 function startBattle() {
-  battleActive = true;
-  canAnswer = true;
+  battleActive = true; canAnswer = true;
   document.getElementById('battle-start').style.display = 'none';
-  document.getElementById('battle-status').textContent = '';
-  showQuestion();
+  nextQ();
 }
 
-function showQuestion() {
+function nextQ() {
   if (!battleActive) return;
-  if (quizOffset >= QUIZ.length || monsterHP <= 0 || playerHP <= 0) return;
-  const q = QUIZ[quizOffset];
+  if (monsterHP <= 0 || playerHP <= 0 || quizIdx >= QUIZ.length) return;
+  const q = QUIZ[quizIdx];
   document.getElementById('battle-status').textContent = q.q;
   const choices = document.getElementById('quiz-choices');
   choices.innerHTML = '';
   canAnswer = true;
   q.opts.forEach((opt, i) => {
     const btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.textContent = opt;
-    btn.onclick = () => answerQuiz(i, btn);
+    btn.className = 'btn'; btn.textContent = opt;
+    btn.onclick = () => answerQ(i, btn);
     choices.appendChild(btn);
   });
 }
 
-function answerQuiz(idx, btn) {
-  if (!canAnswer) return;
-  canAnswer = false;
-  const q = QUIZ[quizOffset];
+function answerQ(idx, btn) {
+  if (!canAnswer) return; canAnswer = false;
+  const q = QUIZ[quizIdx];
   const choices = document.querySelectorAll('#quiz-choices .btn');
   choices.forEach(b => b.disabled = true);
 
@@ -384,34 +456,23 @@ function answerQuiz(idx, btn) {
     playerHP--;
     btn.style.background = '#e53935';
     choices[q.ans].style.background = '#4caf50';
-    document.getElementById('battle-status').textContent = `❌ Oops! The answer was: ${q.opts[q.ans]}. You lose 1 HP.`;
+    document.getElementById('battle-status').textContent = `❌ The answer was: ${q.opts[q.ans]}. You lose 1 HP.`;
   }
-  quizOffset++;
+  quizIdx++;
   updateHP();
+  document.getElementById('battle-progress').textContent = `${quizIdx}/15 questions · Monster ${currentMonsterIdx+1}/3`;
 
   setTimeout(() => {
     if (monsterHP <= 0) {
       document.getElementById('battle-status').textContent = `🎉 ${QUIZ_MONSTERS[currentMonsterIdx].name} defeated!`;
       document.getElementById('quiz-choices').innerHTML = '';
-      setTimeout(() => {
-        currentMonsterIdx++;
-        quizOffset = Math.min(quizOffset, QUIZ.length);
-        if (currentMonsterIdx >= QUIZ_MONSTERS.length) {
-          loadMonster(); // triggers win
-        } else {
-          loadMonster();
-        }
-      }, 1500);
+      setTimeout(() => { currentMonsterIdx++; loadMonster(); }, 1200);
     } else if (playerHP <= 0) {
       document.getElementById('battle-status').textContent = '💀 You fainted! Try again.';
       document.getElementById('quiz-choices').innerHTML = '';
-      setTimeout(() => {
-        resetGame2();
-      }, 2000);
-    } else {
-      showQuestion();
-    }
-  }, 1200);
+      setTimeout(() => resetGame2(), 1500);
+    } else { nextQ(); }
+  }, 1000);
 }
 
 function updateHP() {
@@ -421,7 +482,17 @@ function updateHP() {
   document.getElementById('player-hp-bar').style.width = `${(playerHP/maxPlayerHP)*100}%`;
 }
 
-function hideDialog2() {}
+function resetGame2() {
+  playerHP = maxPlayerHP; currentMonsterIdx = 0; quizIdx = 0; battleActive = false;
+  document.getElementById('win-screen').style.display = 'none';
+  document.getElementById('battle-hud').style.display = 'block';
+  document.getElementById('quiz-choices').innerHTML = '';
+  document.getElementById('battle-progress').textContent = '15 questions · 3 monsters';
+  loadMonster();
+}
+
+// Init
+resetGame2();
 </script>
 </body>
 </html>
