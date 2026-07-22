@@ -709,167 +709,198 @@ const QUIZ = [
 
 let pHP=15, mHP=5, mMHP=5, mIdx=0, qIdx=0, bActive=false, cAns=false;
 
-/* ── PIXEL SPRITE SYSTEM ── */
-const SPRITE_DEFS = {
-  // Pichu (tiny, round ears with black tips)
-  pichu: {
-    w:16, h:16,
-    pal: ['', '#FEE440','#E8C830','#222','#fff','#D4A017','#A67C00','#4a2'], // idx:0=trans,1=yellow,2=dark yellow,3=black,4=white,5=tail brown,6=dark brown,7=green
-    pixels:[
-      '                ',
-      '   33333333     ',
-      '  3333333333    ',
-      '  3111111113    ',
-      ' 311111111113   ',
-      ' 311111111113   ',
-      '3111 4114 1113  ',
-      '31111111111113  ',
-      '31111111111113  ',
-      ' 311113331113   ',
-      ' 311113331113   ',
-      '  3111111113    ',
-      '  3311111133    ',
-      '   33111133     ',
-      '    335533      ',
-      '     33 33      ',
-    ]
-  },
-  // Pikachu (pointed ears, red cheeks, lightning tail)
-  pikachu: {
-    w:18, h:18,
-    pal: ['', '#FEE440','#E8C830','#222','#fff','#D4A017','#A67C00','#e53935','#8B4513'],
-    pixels:[
-      '                    ',
-      '   333333333333     ',
-      '  33311111113333    ',
-      '  31111111111113    ',
-      ' 3111111111111113   ',
-      ' 3111111111111113   ',
-      '3111 4114 4114 113  ',
-      '311111111111111113  ',
-      '311111111111111113  ',
-      '311111188881111113  ',
-      ' 3111111111111113   ',
-      ' 3111133333111113   ',
-      '  31133333333113    ',
-      '  3311111111133     ',
-      '   33555555533      ',
-      '    335555533       ',
-      '     33  333        ',
-      '         33         ',
-    ]
-  },
-  // Raichu (longer pointed ears, flat tail, darker orange)
-  raichu: {
-    w:20, h:20,
-    pal: ['', '#FF9F00','#E08800','#222','#fff','#C07000','#A06000','#e53935','#8B4513'],
-    pixels:[
-      '                      ',
-      '     333333333333     ',
-      '    33333333333333    ',
-      '   3331111111111333   ',
-      '  33311111111111133   ',
-      '  33111111111111113   ',
-      ' 331111111111111113   ',
-      ' 3111 4114 4114 113   ',
-      ' 311111111111111113   ',
-      ' 311111111111111113   ',
-      ' 311117777711111113   ',
-      '  3111111111111113    ',
-      '  3111133333111113    ',
-      '   31133333333113     ',
-      '   3311111111133      ',
-      '    33555555533       ',
-      '     335555533        ',
-      '      33   33         ',
-      '          33          ',
-      '          33          ',
-    ]
-  },
-  // Student (young kid with uniform)
-  student: {
-    w:14, h:18,
-    pal: ['', '#FFD5B8','#5C4033','#222','#fff','#4169E1','#2a4a8a','#e53935','#8B4513','#F4A460'],
-    pixels:[
-      '                ',
-      '     3333       ',
-      '   33333333     ',
-      '  3322222233    ',
-      ' 332222222233   ',
-      ' 322222222223   ',
-      ' 322 4  4 223   ',
-      ' 322222222223   ',
-      ' 322222222223   ',
-      '  32222 2223    ',
-      '   35555553     ',
-      '  3555555553    ',
-      '  3555 55553    ',
-      '  3555 55553    ',
-      '  3555 55553    ',
-      '   88   88      ',
-      '   88   88      ',
-      '  8  8 8  8     ',
-    ]
-  }
-};
-
-function drawPixelSprite(cx, cy, def, scale) {
-  const s = def.pal;
-  const ps = scale;
-  const ox = cx - (def.w * ps) / 2;
-  const oy = cy - (def.h * ps) / 2 + 5;
-  for (let r = 0; r < def.h; r++) {
-    const row = def.pixels[r];
-    for (let c = 0; c < def.w; c++) {
-      const ci = parseInt(row[c] || '0');
-      if (ci === 0) continue;
-      bctx.fillStyle = s[ci];
-      bctx.fillRect(ox + c * ps, oy + r * ps, ps, ps);
-    }
-  }
+/* ── SPRITE DRAWING ── */
+function drawOval(cx, cy, rx, ry, color) {
+  bctx.fillStyle = color;
+  bctx.beginPath();
+  bctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
+  bctx.fill();
+}
+function drawRound(cx, cy, r, color) { drawOval(cx, cy, r, r, color); }
+function drawTri(cx, cy, w, h, color) {
+  bctx.fillStyle = color;
+  bctx.beginPath();
+  bctx.moveTo(cx - w / 2, cy);
+  bctx.lineTo(cx, cy - h);
+  bctx.lineTo(cx + w / 2, cy);
+  bctx.closePath();
+  bctx.fill();
+}
+function drawRect(x, y, w, h, color) {
+  bctx.fillStyle = color;
+  bctx.fillRect(x, y, w, h);
 }
 
-function drawBattleBg() {
-  const grad = bctx.createLinearGradient(0,0,0,BCH);
-  grad.addColorStop(0,'#1a1a3e');
-  grad.addColorStop(0.5,'#2d1b4e');
-  grad.addColorStop(1,'#1a1a2e');
-  bctx.fillStyle = grad;
-  bctx.fillRect(0,0,BCW,BCH);
-  bctx.fillStyle = '#2a3a1a';
-  bctx.fillRect(0,BCH-60,BCW,60);
-  bctx.fillStyle = '#3a4a2a';
-  bctx.fillRect(0,BCH-60,BCW,3);
-  bctx.fillStyle = 'rgba(255,255,255,0.3)';
-  for (let i=0;i<30;i++) {
-    const sx = (i*37+13)%BCW, sy = (i*29+7)%(BCH-80);
-    bctx.fillRect(sx,sy,2,2);
-  }
+function drawPichu(cx, cy) {
+  // Tail (tiny zigzag)
+  drawRect(cx + 28, cy - 10, 18, 5, '#D4A017');
+  drawRect(cx + 34, cy - 16, 5, 6, '#D4A017');
+  // Feet
+  drawRect(cx - 10, cy + 32, 10, 6, '#222');
+  drawRect(cx + 4, cy + 32, 10, 6, '#222');
+  // Body (round yellow blob)
+  drawRound(cx, cy + 6, 28, '#FEE440');
+  drawRound(cx, cy + 6, 26, '#FFF176');
+  // Ears (big round)
+  drawRound(cx - 20, cy - 24, 13, '#FEE440');
+  drawRound(cx + 22, cy - 24, 13, '#FEE440');
+  drawRound(cx - 20, cy - 24, 10, '#222');
+  drawRound(cx + 22, cy - 24, 10, '#222');
+  drawRound(cx - 20, cy - 24, 8, '#FEE440');
+  drawRound(cx + 22, cy - 24, 8, '#FEE440');
+  // Eyes
+  drawRound(cx - 9, cy, 4, '#222');
+  drawRound(cx + 9, cy, 4, '#222');
+  drawRound(cx - 8, cy - 1, 1.5, '#fff');
+  drawRound(cx + 10, cy - 1, 1.5, '#fff');
+  // Mouth
+  drawRect(cx - 3, cy + 6, 6, 2, '#222');
+  // Cheeks
+  drawRound(cx - 16, cy + 4, 5, '#e53935');
+  drawRound(cx + 16, cy + 4, 5, '#e53935');
+}
+
+function drawPikachu(cx, cy) {
+  // Tail (lightning bolt)
+  drawRect(cx + 32, cy - 28, 20, 6, '#D4A017');
+  drawRect(cx + 42, cy - 38, 6, 16, '#D4A017');
+  drawRect(cx + 48, cy - 38, 8, 6, '#8B4513');
+  // Feet
+  drawRect(cx - 14, cy + 36, 12, 7, '#222');
+  drawRect(cx + 4, cy + 36, 12, 7, '#222');
+  // Body
+  drawOval(cx - 2, cy + 4, 26, 34, '#FEE440');
+  // Brown back stripes
+  drawRect(cx - 16, cy - 6, 6, 12, '#8B4513');
+  drawRect(cx - 18, cy + 8, 6, 10, '#8B4513');
+  // Head
+  drawRound(cx - 2, cy - 26, 24, '#FEE440');
+  // Ears (pointy)
+  drawTri(cx - 22, cy - 52, 14, 28, '#FEE440');
+  drawTri(cx + 20, cy - 52, 14, 28, '#FEE440');
+  drawTri(cx - 22, cy - 52, 8, 14, '#222');
+  drawTri(cx + 20, cy - 52, 8, 14, '#222');
+  // Eyes
+  drawRound(cx - 10, cy - 28, 5, '#222');
+  drawRound(cx + 8, cy - 28, 5, '#222');
+  drawRound(cx - 9, cy - 29, 2, '#fff');
+  drawRound(cx + 9, cy - 29, 2, '#fff');
+  // Mouth
+  drawRect(cx - 4, cy - 18, 8, 2, '#222');
+  // Cheeks (red)
+  drawRound(cx - 20, cy - 22, 7, '#e53935');
+  drawRound(cx + 18, cy - 22, 7, '#e53935');
+  // Arms
+  drawRect(cx - 28, cy - 4, 8, 5, '#FEE440');
+  drawRect(cx + 22, cy - 4, 8, 5, '#FEE440');
+  drawRound(cx - 28, cy - 4, 4, '#FEE440');
+  drawRound(cx + 28, cy - 4, 4, '#FEE440');
+}
+
+function drawRaichu(cx, cy) {
+  // Tail (flat paddle)
+  drawRect(cx + 34, cy - 30, 22, 8, '#C07000');
+  drawRect(cx + 50, cy - 36, 14, 20, '#C07000');
+  drawRect(cx + 56, cy - 36, 8, 6, '#8B4513');
+  // Feet
+  drawRect(cx - 16, cy + 42, 14, 8, '#222');
+  drawRect(cx + 6, cy + 42, 14, 8, '#222');
+  // Body (larger, wider)
+  drawOval(cx - 2, cy + 4, 32, 40, '#FF9F00');
+  // Head (larger)
+  drawRound(cx - 2, cy - 30, 28, '#FF9F00');
+  // Ears (longer)
+  drawTri(cx - 26, cy - 62, 16, 34, '#FF9F00');
+  drawTri(cx + 24, cy - 62, 16, 34, '#FF9F00');
+  drawTri(cx - 26, cy - 62, 10, 18, '#222');
+  drawTri(cx + 24, cy - 62, 10, 18, '#222');
+  // Eyes
+  drawRound(cx - 12, cy - 32, 6, '#222');
+  drawRound(cx + 10, cy - 32, 6, '#222');
+  drawRound(cx - 11, cy - 33, 2.5, '#fff');
+  drawRound(cx + 11, cy - 33, 2.5, '#fff');
+  // Mouth
+  drawRect(cx - 5, cy - 21, 10, 2.5, '#222');
+  // Cheeks
+  drawRound(cx - 22, cy - 26, 8, '#e53935');
+  drawRound(cx + 20, cy - 26, 8, '#e53935');
+  // Arms
+  drawRect(cx - 34, cy - 4, 10, 6, '#FF9F00');
+  drawRect(cx + 26, cy - 4, 10, 6, '#FF9F00');
+  drawRound(cx - 34, cy - 4, 5, '#FF9F00');
+  drawRound(cx + 32, cy - 4, 5, '#FF9F00');
+  // Belly mark
+  drawRect(cx - 8, cy + 8, 16, 8, '#E08800');
+  drawRect(cx - 8, cy + 18, 16, 6, '#E08800');
+}
+
+function drawStudent(cx, cy) {
+  // Shoes
+  drawRect(cx - 12, cy + 42, 12, 6, '#222');
+  drawRect(cx + 2, cy + 42, 12, 6, '#222');
+  // Legs (pants/shorts)
+  drawRect(cx - 10, cy + 24, 8, 18, '#2a4a8a');
+  drawRect(cx + 4, cy + 24, 8, 18, '#2a4a8a');
+  // Arms
+  drawRect(cx - 18, cy - 2, 6, 22, '#FFD5B8');
+  drawRect(cx + 14, cy - 2, 6, 22, '#FFD5B8');
+  // Body (uniform)
+  drawRect(cx - 12, cy, 26, 26, '#4169E1');
+  drawRect(cx - 8, cy + 4, 18, 4, '#2a4a8a');
+  drawRect(cx - 8, cy + 14, 18, 4, '#2a4a8a');
+  // Head
+  drawRound(cx - 1, cy - 18, 20, '#FFD5B8');
+  // Hair (brown)
+  drawRect(cx - 18, cy - 32, 36, 10, '#5C4033');
+  drawRound(cx - 18, cy - 28, 6, '#5C4033');
+  drawRound(cx + 16, cy - 28, 6, '#5C4033');
+  drawRect(cx - 16, cy - 34, 6, 4, '#5C4033');
+  drawRect(cx + 10, cy - 34, 6, 4, '#5C4033');
+  // Eyes
+  drawRound(cx - 7, cy - 20, 3, '#222');
+  drawRound(cx + 5, cy - 20, 3, '#222');
+  drawRound(cx - 6, cy - 21, 1.5, '#fff');
+  drawRound(cx + 6, cy - 21, 1.5, '#fff');
+  // Mouth (smile)
+  bctx.strokeStyle = '#222';
+  bctx.lineWidth = 1.5;
+  bctx.beginPath();
+  bctx.arc(cx - 1, cy - 13, 5, 0.1, Math.PI - 0.1);
+  bctx.stroke();
 }
 
 function drawBattleScene() {
   drawBattleBg();
-  // Monster (left side)
-  const mx = 160, my = BCH - 100;
-  const monScale = mIdx >= 0 && mIdx < 3 ? 5.0 : 4.5;
-  const monDefs = ['pichu', 'pikachu', 'raichu'];
+  const monDefs = [drawPichu, drawPikachu, drawRaichu];
   const mName = QUIZ_MONSTERS[mIdx]?.name || '?';
-  if (mIdx >= 0 && mIdx < 3) {
-    drawPixelSprite(mx, my, SPRITE_DEFS[monDefs[mIdx]], monScale);
-  }
-  // Player (right side)
-  const px = 440, py = BCH - 95;
-  drawPixelSprite(px, py, SPRITE_DEFS.student, 3.0);
 
-  // Name tags
-  bctx.font = 'bold 12px monospace';
-  bctx.textAlign = 'center';
-  if (QUIZ_MONSTERS[mIdx]) {
+  // Monster (left side) - bigger, standing on ground
+  if (mIdx >= 0 && mIdx < 3) {
+    const mx = 155, my = BCH - 70;
+    monDefs[mIdx](mx, my);
+    bctx.font = 'bold 13px monospace';
+    bctx.textAlign = 'center';
     bctx.fillStyle = QUIZ_MONSTERS[mIdx].color;
-    bctx.fillText(mName, mx, 22);
+    bctx.fillText(mName, mx, 18);
   }
+
+  // Player (right side)
+  const px = 445, py = BCH - 72;
+  drawStudent(px, py);
+  bctx.font = 'bold 13px monospace';
+  bctx.textAlign = 'center';
   bctx.fillStyle = '#4fc3f7';
-  bctx.fillText('YOU', px, 22);
+  bctx.fillText('YOU', px, 18);
+}
+
+function drawBattleBg() {
+  var g = bctx.createLinearGradient(0,0,0,BCH);
+  g.addColorStop(0,'#1a1a3e'); g.addColorStop(0.5,'#2d1b4e'); g.addColorStop(1,'#1a1a2e');
+  bctx.fillStyle=g; bctx.fillRect(0,0,BCW,BCH);
+  bctx.fillStyle='#2a3a1a'; bctx.fillRect(0,BCH-60,BCW,60);
+  bctx.fillStyle='#3a4a2a'; bctx.fillRect(0,BCH-60,BCW,3);
+  bctx.fillStyle='rgba(255,255,255,0.3)';
+  for(var i=0;i<30;i++){var sx=(i*37+13)%BCW,sy=(i*29+7)%(BCH-80);bctx.fillRect(sx,sy,2,2);}
 }
 
 /* ── ATTACK ANIMATIONS ── */
