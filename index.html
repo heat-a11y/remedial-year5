@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏅 Sports Day Learning — Year 5 English</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f0f4f8;
+            color: #1a1a2e;
+            line-height: 1.6;
+        }
+        header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+        }
+        header h1 { font-size: 2rem; margin-bottom: 0.3rem; }
+        header p { opacity: 0.85; font-size: 1rem; }
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        .badge {
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+        }
+        .badge.canva { background: #8B5CF6; }
+        .badge.gemini { background: #4285F4; }
+        .badge.msai { background: #00A4EF; }
+
+        .container { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+        section { margin-bottom: 2.5rem; }
+        h2 {
+            font-size: 1.4rem;
+            border-bottom: 3px solid #0f3460;
+            padding-bottom: 0.4rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        h3 { font-size: 1.1rem; margin: 1rem 0 0.5rem; color: #0f3460; }
+
+        .ai-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid #ccc;
+        }
+        .ai-card.canva { border-left-color: #8B5CF6; }
+        .ai-card.gemini { border-left-color: #4285F4; }
+        .ai-card.msai { border-left-color: #00A4EF; }
+        .ai-card .tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.6rem;
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .ai-card.canva .tag { background: #8B5CF6; }
+        .ai-card.gemini .tag { background: #4285F4; }
+        .ai-card.msai .tag { background: #00A4EF; }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+        @media (max-width: 640px) { .game-grid { grid-template-columns: 1fr; } }
+
+        .game-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .game-card:hover { transform: translateY(-3px); }
+        .game-card .header {
+            padding: 1rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .game-card.canva .header { background: linear-gradient(135deg, #8B5CF6, #6D28D9); }
+        .game-card.gemini .header { background: linear-gradient(135deg, #4285F4, #1a73e8); }
+        .game-card.msai .header { background: linear-gradient(135deg, #00A4EF, #0078D4); }
+        .game-card .body { padding: 1rem; }
+        .game-card .body p { font-size: 0.9rem; color: #555; margin-bottom: 0.5rem; }
+
+        /* ── Match Game ── */
+        .match-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .match-item {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 0.8rem;
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .match-item.selected { border-color: #0f3460; background: #e8f0fe; transform: scale(0.97); }
+        .match-item.matched { border-color: #34a853; background: #e6f4ea; cursor: default; opacity: 0.7; }
+        .match-item.wrong { border-color: #ea4335; background: #fce8e6; animation: shake 0.3s; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-5px)} 75%{transform:translateX(5px)} }
+
+        /* ── Story Builder ── */
+        .story-area {
+            background: #fffde7;
+            border: 2px dashed #f9a825;
+            border-radius: 10px;
+            padding: 1rem;
+            min-height: 100px;
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+        .word-bank {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 0.5rem 0;
+        }
+        .word-chip {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 16px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .word-chip:hover { background: #bbdefb; }
+        .word-chip.used { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
+
+        /* ── Quiz ── */
+        .quiz-option {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quiz-option:hover { border-color: #0f3460; background: #f0f4ff; }
+        .quiz-option.correct { border-color: #34a853; background: #e6f4ea; }
+        .quiz-option.incorrect { border-color: #ea4335; background: #fce8e6; }
+        .quiz-feedback { font-size: 0.9rem; margin-top: 0.5rem; min-height: 1.5rem; }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            color: white;
+        }
+        .btn:hover { opacity: 0.85; }
+        .btn.primary { background: #0f3460; }
+        .btn.success { background: #34a853; }
+        .btn.danger { background: #ea4335; }
+
+        .game-container {
+            display: none;
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 1rem;
+        }
+        .game-container.active { display: block; }
+        .game-container h3 { margin-top: 0; }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1rem;
+            color: #0f3460;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .score { font-size: 1.2rem; font-weight: 700; color: #0f3460; text-align: center; margin: 0.5rem 0; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #888;
+            font-size: 0.85rem;
+        }
+        .ai-tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted #999;
+            cursor: help;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏅 Sports Day</h1>
+    <p>Year 5 English — Learn about sports, play games, and write like a reporter!</p>
+    <div class="badge-row">
+        <span class="badge canva">🎨 Canva AI</span>
+        <span class="badge gemini">🤖 Gemini AI</span>
+        <span class="badge msai">⚡ Microsoft AI</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- ─── Lesson Overview ─── -->
+    <section>
+        <h2>📋 Lesson Overview</h2>
+        <p><strong>Topic:</strong> Sports and Activities — Writing about sports experiences</p>
+        <p><strong>Focus:</strong> Present simple (routines), present continuous (current activities), past simple (events)</p>
+        <p>Click any game below to play. Each game uses a different AI tool to help you learn.</p>
+    </section>
+
+    <!-- ─── AI Learning Tools ─── -->
+    <section>
+        <h2>🤖 AI Learning Tools</h2>
+        <div class="ai-card canva">
+            <span class="tag">🎨 Canva AI</span>
+            <p><strong>Design your sports poster.</strong> Use Canva AI to generate sport illustrations, design vocabulary flashcards, and create your own Sports Day poster with AI-powered design suggestions. <a href="https://canva.com" target="_blank">Open Canva →</a></p>
+        </div>
+        <div class="ai-card gemini">
+            <span class="tag">🤖 Gemini AI</span>
+            <p><strong>Ask Gemini about sports.</strong> Stuck on a word? Want to know more about a sport? Ask Gemini! It can help you write sentences, explain rules, and give you feedback on your writing. <a href="https://gemini.google.com" target="_blank">Open Gemini →</a></p>
+        </div>
+        <div class="ai-card msai">
+            <span class="tag">⚡ Microsoft AI</span>
+            <p><strong>Practice with Microsoft AI tools.</strong> Use Microsoft Translator for pronunciation help, Microsoft Copilot to check your grammar, and Reading Progress to build reading fluency. <a href="https://copilot.microsoft.com" target="_blank">Open Microsoft Copilot →</a></p>
+        </div>
+    </section>
+
+    <!-- ─── Games ─── -->
+    <section>
+        <h2>🎮 Interactive Games</h2>
+        <div class="game-grid">
+            <div class="game-card canva" onclick="showGame('match')">
+                <div class="header">🎨 Canva AI<br><span style="font-size:0.7rem;">Match Sports & Equipment</span></div>
+                <div class="body">
+                    <p>Match each sport to the right equipment! Canva AI helped design the visuals for this game.</p>
+                    <p style="font-weight:700;color:#8B5CF6;">Click to play →</p>
+                </div>
+            </div>
+            <div class="game-card gemini" onclick="showGame('story')">
+                <div class="header">🤖 Gemini AI<br><span style="font-size:0.7rem;">Sports Day Story Builder</span></div>
+                <div class="body">
+                    <p>Build your own Sports Day story by choosing the right words. Gemini can help you write even more!</p>
+                    <p style="font-weight:700;color:#4285F4;">Click to play →</p>
+                </div>
+            </div>
+            <div class="game-card msai" onclick="showGame('quiz')" style="grid-column: 1 / -1; max-width: 480px; margin: 0 auto;">
+                <div class="header">⚡ Microsoft AI<br><span style="font-size:0.7rem;">Sports Quiz Challenge</span></div>
+                <div class="body">
+                    <p>Test your sports knowledge! Microsoft AI helps with pronunciation and reading support.</p>
+                    <p style="font-weight:700;color:#00A4EF;">Click to play →</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- GAME: MATCH (Canva AI)               -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="game-container" id="game-match">
+        <a class="back-link" onclick="hideGame('match')">← Back to games</a>
+        <h3>🎨 Sport & Equipment Match — <span style="color:#8B5CF6;">Canva AI</span></h3>
+        <p>Click a sport, then click its equipment. Match all pairs to win!</p>
+        <div class="score" id="match-score">0 / 8 matched</div>
+        <div class="match-grid" id="match-grid"></div>
+        <div style="text-align:center;margin-top:0.5rem;">
+            <button class="btn danger" onclick="resetMatch()">🔄 Reset</button>
+        </div>
+        <p style="margin-top:1rem;font-size:0.85rem;color:#888;">
+            💡 <strong>Canva AI tip:</strong> Open Canva and say "design a football flashcard" — Canva AI will create one for you instantly!
+        </p>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- GAME: STORY BUILDER (Gemini AI)      -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="game-container" id="game-story">
+        <a class="back-link" onclick="hideGame('story')">← Back to games</a>
+        <h3>🤖 Sports Day Story Builder — <span style="color:#4285F4;">Gemini AI</span></h3>
+        <p>Click words below to build your Sports Day story. Try to use all the words!</p>
+        <div class="story-area" id="story-area">Last Saturday, our school held a Sports Day. First, we </div>
+        <div class="word-bank" id="word-bank"></div>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-top:0.5rem;">
+            <button class="btn success" onclick="finishStory()">✏️ Read My Story</button>
+            <button class="btn danger" onclick="resetStory()">🔄 Start Over</button>
+        </div>
+        <div id="story-output" style="display:none;margin-top:1rem;background:#e8f5e9;border-radius:10px;padding:1rem;"></div>
+        <p style="margin-top:1rem;font-size:0.85rem;color:#888;">
+            💡 <strong>Gemini AI tip:</strong> Copy your story and ask Gemini: "Can you check my past tense verbs?" It'll help you improve!
+        </p>
+    </div>
+
+    <!-- ══════════════════════════════════════ -->
+    <!-- GAME: QUIZ (Microsoft AI)            -->
+    <!-- ══════════════════════════════════════ -->
+    <div class="game-container" id="game-quiz">
+        <a class="back-link" onclick="hideGame('quiz')">← Back to games</a>
+        <h3>⚡ Sports Quiz Challenge — <span style="color:#00A4EF;">Microsoft AI</span></h3>
+        <div id="quiz-area">
+            <p id="quiz-question" style="font-weight:700;font-size:1.1rem;"></p>
+            <div id="quiz-options"></div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+            <div style="display:flex;gap:0.5rem;margin-top:0.8rem;">
+                <button class="btn primary" onclick="nextQuiz()" id="quiz-next" disabled>Next →</button>
+                <button class="btn danger" onclick="resetQuiz()">🔄 Restart</button>
+            </div>
+            <div class="score" id="quiz-score">0 / 0 correct</div>
+        </div>
+        <p style="margin-top:1rem;font-size:0.85rem;color:#888;">
+            💡 <strong>Microsoft AI tip:</strong> Use Microsoft Translator to hear how sport words are pronounced. Just type a word and click the speaker icon!
+        </p>
+    </div>
+
+</div>
+
+<footer>
+    <p>🏅 Sports Day Learning — Year 5 English</p>
+    <p>Powered by 🎨 Canva AI · 🤖 Gemini AI · ⚡ Microsoft AI</p>
+</footer>
+
+<script>
+// ═══════════════════════════════════════════
+// GAME 1 — Match Sports & Equipment (Canva AI)
+// ═══════════════════════════════════════════
+const MATCH_DATA = [
+    { sport: '⚽ Football', equip: 'Boots & Ball' },
+    { sport: '🏸 Badminton', equip: 'Racket & Shuttlecock' },
+    { sport: '🏀 Basketball', equip: 'Hoop & Ball' },
+    { sport: '🏓 Table Tennis', equip: 'Paddle & Ball' },
+    { sport: '🏊 Swimming', equip: 'Goggles & Cap' },
+    { sport: '🚴 Cycling', equip: 'Helmet & Bike' },
+    { sport: '🥊 Boxing', equip: 'Gloves & Punchbag' },
+    { sport: '🎾 Tennis', equip: 'Racket & Net' },
+];
+
+let matchItems = [];
+let matchSelected = null;
+let matchMatched = 0;
+
+function shuffle(arr) { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; }
+
+function initMatch() {
+    matchSelected = null;
+    matchMatched = 0;
+    const sports = MATCH_DATA.map(m => ({ type: 'sport', text: m.sport, pair: m.equip, id: m.sport }));
+    const equips = MATCH_DATA.map(m => ({ type: 'equip', text: m.equip, pair: m.sport, id: m.equip }));
+    matchItems = shuffle([...sports, ...equips]);
+    renderMatch();
+}
+
+function renderMatch() {
+    const grid = document.getElementById('match-grid');
+    grid.innerHTML = '';
+    document.getElementById('match-score').textContent = `${matchMatched} / ${MATCH_DATA.length} matched`;
+    matchItems.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'match-item';
+        if (item.matched) { div.classList.add('matched'); }
+        div.textContent = item.text;
+        div.dataset.index = idx;
+        div.onclick = () => clickMatch(idx);
+        grid.appendChild(div);
+    });
+    if (matchMatched === MATCH_DATA.length) {
+        setTimeout(() => alert('🎉 All matched! Great job! You can reset and play again.'), 300);
+    }
+}
+
+function clickMatch(idx) {
+    const item = matchItems[idx];
+    if (item.matched) return;
+    const el = document.querySelectorAll('.match-item')[idx];
+
+    if (matchSelected === null) {
+        matchSelected = idx;
+        el.classList.add('selected');
+        return;
+    }
+
+    if (matchSelected === idx) {
+        el.classList.remove('selected');
+        matchSelected = null;
+        return;
+    }
+
+    const first = matchItems[matchSelected];
+    const firstEl = document.querySelectorAll('.match-item')[matchSelected];
+
+    if (first.type !== item.type && first.pair === (item.type === 'sport' ? item.text : item.id)) {
+        first.matched = true;
+        item.matched = true;
+        matchMatched++;
+        firstEl.classList.remove('selected');
+        matchSelected = null;
+        renderMatch();
+    } else {
+        firstEl.classList.remove('selected');
+        firstEl.classList.add('wrong');
+        el.classList.add('wrong');
+        matchSelected = null;
+        setTimeout(() => {
+            firstEl.classList.remove('wrong');
+            el.classList.remove('wrong');
+        }, 400);
+    }
+}
+
+function resetMatch() { initMatch(); }
+
+// ═══════════════════════════════════════════
+// GAME 2 — Story Builder (Gemini AI)
+// ═══════════════════════════════════════════
+const STORY_WORDS = [
+    'ran', 'jumped', 'cheered', 'raced', 'caught', 'threw', 'kicked', 'won',
+    'finished', 'practised', 'scored', 'celebrated', 'whistled', 'applauded', 'competed', 'trained'
+];
+
+let storyUsed = new Set();
+
+function initStory() {
+    storyUsed = new Set();
+    document.getElementById('story-area').innerHTML = 'Last Saturday, our school held a Sports Day. First, we ';
+    document.getElementById('story-output').style.display = 'none';
+    renderWordBank();
+}
+
+function renderWordBank() {
+    const bank = document.getElementById('word-bank');
+    bank.innerHTML = '';
+    shuffle([...STORY_WORDS]).forEach(w => {
+        const span = document.createElement('span');
+        span.className = 'word-chip' + (storyUsed.has(w) ? ' used' : '');
+        span.textContent = w;
+        span.onclick = () => addWord(w);
+        bank.appendChild(span);
+    });
+}
+
+function addWord(word) {
+    if (storyUsed.has(word)) return;
+    storyUsed.add(word);
+    const area = document.getElementById('story-area');
+    area.innerHTML += ' ' + word;
+    renderWordBank();
+    // auto-scroll
+    area.scrollTop = area.scrollHeight;
+}
+
+function finishStory() {
+    const area = document.getElementById('story-area');
+    const out = document.getElementById('story-output');
+    out.style.display = 'block';
+    const story = area.textContent || area.innerText;
+    const finalStory = story.trim() + '. It was an amazing day! 🏅';
+    out.innerHTML = `<strong>Your Sports Day Story:</strong><br><br>"${finalStory}"<br><br>
+        <p style="font-size:0.85rem;color:#555;">
+        🤖 <strong>Try this:</strong> Copy your story and ask <a href="https://gemini.google.com" target="_blank">Gemini</a> 
+        to check your past tense verbs or help you add more details!</p>`;
+}
+
+function resetStory() { initStory(); }
+
+// ═══════════════════════════════════════════
+// GAME 3 — Quiz (Microsoft AI)
+// ═══════════════════════════════════════════
+const QUIZ = shuffle([
+    { q: 'Which sport uses a shuttlecock?', options: ['Badminton', 'Tennis', 'Football', 'Basketball'], correct: 0 },
+    { q: 'How many players are on a basketball team?', options: ['5', '7', '11', '9'], correct: 0 },
+    { q: 'What do swimmers wear on their eyes?', options: ['Goggles', 'Glasses', 'Mask', 'Helmet'], correct: 0 },
+    { q: 'Which sport is played with a bat and ball?', options: ['Baseball', 'Badminton', 'Swimming', 'Cycling'], correct: 0 },
+    { q: 'What colour card means a player is sent off in football?', options: ['Red', 'Yellow', 'Blue', 'Green'], correct: 0 },
+    { q: 'How long is a football match?', options: ['90 minutes', '60 minutes', '120 minutes', '45 minutes'], correct: 0 },
+    { q: 'What is the net called in tennis?', options: ['Net', 'Goal', 'Hoop', 'Post'], correct: 0 },
+    { q: 'In which sport do you use a racket?', options: ['Tennis', 'Football', 'Swimming', 'Cycling'], correct: 0 },
+    { q: 'What do cyclists wear on their head?', options: ['Helmet', 'Cap', 'Hat', 'Headband'], correct: 0 },
+    { q: 'Which sport has a hoop?', options: ['Basketball', 'Football', 'Badminton', 'Swimming'], correct: 0 },
+]);
+
+let quizIndex = 0;
+let quizCorrect = 0;
+let quizTotal = 0;
+let quizAnswered = false;
+
+function initQuiz() {
+    quizIndex = 0;
+    quizCorrect = 0;
+    quizTotal = 0;
+    quizAnswered = false;
+    renderQuiz();
+}
+
+function renderQuiz() {
+    if (quizIndex >= QUIZ.length) {
+        document.getElementById('quiz-question').textContent = '🏁 Quiz complete!';
+        document.getElementById('quiz-options').innerHTML = '';
+        document.getElementById('quiz-feedback').textContent = `You got ${quizCorrect} out of ${quizTotal} correct! ${quizCorrect === quizTotal ? '🎉 Perfect!' : 'Try again to improve!'}`;
+        document.getElementById('quiz-next').disabled = true;
+        document.getElementById('quiz-score').textContent = `${quizCorrect} / ${quizTotal} correct`;
+        return;
+    }
+    const q = QUIZ[quizIndex];
+    document.getElementById('quiz-question').textContent = q.q;
+    document.getElementById('quiz-feedback').textContent = '';
+    document.getElementById('quiz-next').disabled = true;
+    quizAnswered = false;
+
+    const opts = document.getElementById('quiz-options');
+    opts.innerHTML = '';
+    q.options.forEach((opt, i) => {
+        const div = document.createElement('div');
+        div.className = 'quiz-option';
+        div.textContent = opt;
+        div.onclick = () => answerQuiz(i);
+        opts.appendChild(div);
+    });
+    document.getElementById('quiz-score').textContent = `${quizCorrect} / ${quizTotal} correct`;
+}
+
+function answerQuiz(idx) {
+    if (quizAnswered) return;
+    quizAnswered = true;
+    const q = QUIZ[quizIndex];
+    const opts = document.querySelectorAll('#quiz-options .quiz-option');
+    quizTotal++;
+    if (idx === q.correct) {
+        quizCorrect++;
+        opts[idx].classList.add('correct');
+        document.getElementById('quiz-feedback').textContent = '✅ Correct! Well done!';
+        document.getElementById('quiz-feedback').style.color = '#34a853';
+    } else {
+        opts[idx].classList.add('incorrect');
+        opts[q.correct].classList.add('correct');
+        document.getElementById('quiz-feedback').textContent = `❌ Not quite. The correct answer is: ${q.options[q.correct]}`;
+        document.getElementById('quiz-feedback').style.color = '#ea4335';
+    }
+    document.getElementById('quiz-next').disabled = false;
+    document.getElementById('quiz-score').textContent = `${quizCorrect} / ${quizTotal} correct`;
+}
+
+function nextQuiz() {
+    quizIndex++;
+    renderQuiz();
+}
+
+function resetQuiz() { initQuiz(); }
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showGame(game) {
+    document.querySelectorAll('.game-container').forEach(c => c.classList.remove('active'));
+    document.getElementById('game-' + game).classList.add('active');
+    document.getElementById('game-' + game).scrollIntoView({ behavior: 'smooth' });
+    if (game === 'match') initMatch();
+    if (game === 'story') initStory();
+    if (game === 'quiz') initQuiz();
+}
+
+function hideGame(game) {
+    document.getElementById('game-' + game).classList.remove('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Init match on load (hidden)
+initMatch();
+</script>
+</body>
+</html>
